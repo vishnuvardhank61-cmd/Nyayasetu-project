@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Guide: {{ service.get_name_display }} - NyayaSetu{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <!-- Header Card -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white overflow-hidden">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3 me-3 text-warning">
+                            <i class="bi bi-info-square-fill fs-2"></i>
+                        </div>
+                        <div>
+                            <span class="badge bg-secondary mb-2">OFFICIAL GUIDE</span>
+                            <h1 class="h2 fw-bold text-dark mb-1">{{ service.get_name_display }}</h1>
+                            <p class="text-muted mb-0">Learn exactly how to get your {{ service.get_name_display }} safely and easily.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-primary border-0 rounded-4 p-4 mb-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-shield-lock-fill fs-3 me-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1 small text-uppercase" style="letter-spacing: 0.5px;">Privacy Protection</h6>
+                                <p class="small mb-0 opacity-75">To keep your biometrics safe, this application must be finished on the official government website or at a certified center.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Main Guide -->
+                <div class="col-lg-8">
+                    <!-- Essential Steps -->
+                    <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white">
+                        <div class="card-body p-4 p-md-5">
+                            
+                            <div class="mb-5">
+                                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-question-circle text-primary me-2"></i> What is this?</h5>
+                                <p class="text-dark lh-base">{{ service.description }}</p>
+                            </div>
+
+                            <div class="mb-5">
+                                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-person-check text-success me-2"></i> Who can apply?</h5>
+                                <div class="p-4 bg-success bg-opacity-10 rounded-4 border-start border-4 border-success">
+                                    <p class="mb-0 text-dark">{{ service.eligibility }}</p>
+                                </div>
+                            </div>
+
+                            <h4 class="fw-bold text-dark mb-4 border-bottom pb-3">
+                                <i class="bi bi-list-ol text-primary me-2"></i> Preparation Checklist
+                            </h4>
+                            
+                            <div class="mb-5">
+                                <h6 class="fw-bold text-muted text-uppercase small mb-3">Required Documents</h6>
+                                <div class="list-group list-group-flush">
+                                    {% if service.required_fields %}
+                                        <div class="p-3 bg-light rounded-3 border-start border-3 border-primary mb-3 shadow-sm">
+                                            <p class="mb-0 text-dark small"><i class="bi bi-check2-circle text-success me-2"></i> {{ service.required_fields }}</p>
+                                        </div>
+                                    {% endif %}
+                                    <p class="text-muted small"><strong>Pro Tip:</strong> Always carry your original documents along with two sets of photocopies!</p>
+                                </div>
+                            </div>
+
+                            <h4 class="fw-bold text-dark mb-4 border-bottom pb-3">
+                                <i class="bi bi-geo-alt-fill text-danger me-2"></i> How to Get It?
+                            </h4>
+                            <div class="p-4 bg-light rounded-4 mb-4">
+                                <p class="text-dark lh-lg mb-4">
+                                    For <strong>{{ service.get_name_display }}</strong>, you have two simple ways to proceed:
+                                </p>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-white rounded-4 shadow-sm h-100">
+                                            <h6 class="fw-bold text-primary"><i class="bi bi-1-circle-fill me-2"></i> Online Portal</h6>
+                                            <p class="small text-muted mb-0">Use the official website link on the right to start your application from home.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-white rounded-4 shadow-sm h-100">
+                                            <h6 class="fw-bold text-primary"><i class="bi bi-2-circle-fill me-2"></i> Citizen Centers</h6>
+                                            <p class="small text-muted mb-0">Visit your nearest MeeSeva or CSC center for physical help with your application.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-white text-dark border px-3 py-2 rounded-pill">MeeSeva Center</span>
+                                    <span class="badge bg-white text-dark border px-3 py-2 rounded-pill">CSC Outlet</span>
+                                    <span class="badge bg-white text-dark border px-3 py-2 rounded-pill">District Office</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow rounded-4 mb-4 overflow-hidden" style="background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);">
+                        <div class="card-body p-4 text-white text-center py-5">
+                            <i class="bi bi-box-arrow-up-right display-5 mb-3 d-block text-warning opacity-75"></i>
+                            <h5 class="fw-bold mb-3">Begin Application</h5>
+                            <p class="small opacity-75 mb-4 px-2">Click below to go to the official government portal for high security.</p>
+                            
+                            {% if service.official_website %}
+                            <a href="{{ service.official_website }}" target="_blank" class="btn btn-warning w-100 py-3 fw-bold rounded-pill shadow">
+                                Open Portal <i class="bi bi-chevron-right ms-2"></i>
+                            </a>
+                            {% else %}
+                            <button class="btn btn-outline-light w-100 py-3 fw-bold rounded-pill disabled">
+                                Portal Link Pending
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+                        <div class="card-body p-4">
+                            <div class="mb-0">
+                                <h6 class="fw-bold text-dark small text-uppercase mb-2" style="letter-spacing: 1px;">Wait Time</h6>
+                                <h4 class="fw-bold text-primary mb-0"><i class="bi bi-clock-history me-2"></i> {{ service.processing_days }} Days</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-4 bg-white">
+                        <div class="card-body p-4">
+                             <h6 class="fw-bold text-dark small text-uppercase mb-3" style="letter-spacing: 1px;">Need Help?</h6>
+                             <p class="small text-muted mb-0">If you get stuck, you can talk to our <strong>NyayaSetu AI assistant</strong> for more clarification on this document!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="{% url 'applications:service_list' %}" class="btn btn-outline-secondary px-5 rounded-pill fw-bold">
+                    <i class="bi bi-arrow-left me-2"></i> Back to Services
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

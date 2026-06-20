@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Laws in {{ state.name }} - NyayaSetu{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-lg-8">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'regions:list' %}" class="text-decoration-none">State Laws</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ state.name }}</li>
+            </ol>
+        </nav>
+        <h1 class="display-5 fw-bold text-dark mb-3"><i class="bi bi-geo-alt-fill text-primary me-2"></i> Laws in {{ state.name }}</h1>
+        <p class="lead text-muted">A curated list of state-specific acts, regulations, and citizen rights for {{ state.name }}.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    {% for law in laws %}
+    <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill fw-bold">
+                        ACT REF: {{ law.act_name }}
+                    </span>
+                </div>
+                <h4 class="fw-bold text-dark mb-3">{{ law.title }}</h4>
+                <p class="text-muted flex-grow-1">{{ law.description|truncatewords:25 }}</p>
+                
+                <div class="bg-light p-3 rounded-3 mb-4">
+                    <h6 class="fw-bold mb-1 small text-uppercase text-muted">Who it applies to:</h6>
+                    <p class="small mb-0">{{ law.who_it_applies_to|truncatewords:20 }}</p>
+                </div>
+
+                <a href="{% url 'regions:law_detail' law.id %}" class="btn btn-outline-primary fw-bold rounded-pill w-100">
+                    Explore Provisions <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5 bg-white rounded-4 shadow-sm">
+        <i class="bi bi-journal-x display-1 text-muted opacity-25 mb-3"></i>
+        <h3 class="text-muted">No specific laws listed yet</h3>
+        <p class="text-secondary">We are still populating the legal database for this state.</p>
+        <a href="{% url 'regions:list' %}" class="btn btn-primary rounded-pill px-4 mt-3">Back to All States</a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination if needed -->
+{% if page_obj.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link shadow-sm border-0 rounded-start-pill px-4" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Previous</a></li>
+        {% endif %}
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link shadow-sm border-0 rounded-end-pill px-4" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

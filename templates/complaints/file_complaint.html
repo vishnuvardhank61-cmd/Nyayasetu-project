@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}File a Complaint - NyayaSetu{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2">📝 File a Complaint</h1>
+            <p class="text-muted">Report violations of your rights. We will help you seek justice.</p>
+        </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="row mb-5">
+        <div class="col">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="progress-steps d-flex justify-content-between">
+                        <div class="text-center">
+                            <div class="rounded-circle {% if not suggested_right %}bg-primary text-white{% else %}bg-success text-white{% endif %} d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                {% if suggested_right %}✓{% else %}1{% endif %}
+                            </div>
+                            <p class="mt-2 small {% if not suggested_right %}fw-bold{% endif %}">Fill Details</p>
+                        </div>
+                        <div class="align-self-center flex-grow-1 mx-2" style="height: 2px; background: {% if suggested_right %}#198754{% else %}#dee2e6{% endif %};"></div>
+                        <div class="text-center">
+                            <div class="rounded-circle {% if suggested_right %}bg-primary text-white{% else %}bg-light text-secondary{% endif %} d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">2</div>
+                            <p class="mt-2 small {% if suggested_right %}fw-bold{% else %}text-muted{% endif %}">Review</p>
+                        </div>
+                        <div class="align-self-center flex-grow-1 mx-2" style="height: 2px; background: #dee2e6;"></div>
+                        <div class="text-center">
+                            <div class="rounded-circle bg-light text-secondary d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">3</div>
+                            <p class="mt-2 small text-muted">Confirm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Messages -->
+            {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}danger{% else %}info{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if suggested_right %}
+            <!-- STEP 2: REVIEW COMPLAINT -->
+            <div class="card border-0 border-start border-success border-5 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="card-title text-success mb-3">✅ Right Detected</h4>
+                    <div class="alert alert-light border shadow-sm">
+                        <p class="mb-2"><strong>{{ suggested_right.title }}</strong></p>
+                        <p class="mb-0 small text-muted">Article {{ suggested_right.article_number }}</p>
+                    </div>
+                    <p class="card-text">{{ suggested_right.simple_explanation }}</p>
+                    <span class="badge bg-success mb-2">Confidence: {{ confidence|floatformat:0 }}%</span>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Review Your Complaint</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="bg-light p-3 rounded mb-4">
+                            <p class="text-muted small fw-bold mb-1">TITLE</p>
+                            <p class="fw-bold fs-5">{{ form.title.value }}</p>
+                            
+                            <p class="text-muted small fw-bold mb-1 mt-3">CATEGORY</p>
+                            <p><span class="badge bg-secondary">{{ form.category.value }}</span></p>
+
+                            <p class="text-muted small fw-bold mb-1 mt-3">DESCRIPTION</p>
+                            <p class="mb-0">{{ form.description.value|linebreaksbr }}</p>
+                        </div>
+
+                        <!-- Hidden fields to preserve data -->
+                        <input type="hidden" name="title" value="{{ form.title.value }}">
+                        <input type="hidden" name="category" value="{{ form.category.value }}">
+                        <input type="hidden" name="description" value="{{ form.description.value }}">
+                        <input type="hidden" name="violated_right" value="{{ suggested_right.id }}">
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'complaints:file_complaint' %}" class="btn btn-outline-secondary">← Edit Complaint</a>
+                            <button type="submit" name="submit" class="btn btn-success">✓ File Complaint</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- STEP 1: FILL DETAILS -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Complaint Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold">Complaint Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="category" class="form-label fw-bold">Category *</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.category.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold">Description *</label>
+                            {{ form.description }}
+                            <small class="text-muted d-block mt-2">Be specific: Include dates, times, locations, and witness names</small>
+                            {% if form.description.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="evidence" class="form-label fw-bold">Attach Evidence (Optional)</label>
+                            {{ form.evidence }}
+                            <small class="text-muted d-block mt-1">Upload relevant photos, documents, or recordings (Max 10MB)</small>
+                            {% if form.evidence.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.evidence.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" name="preview" class="btn btn-primary">📋 Review Complaint</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar Tips -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">📌 Filing Tips</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <strong>Be Specific</strong>
+                            <p class="small text-muted">Include dates, times, and locations</p>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Provide Context</strong>
+                            <p class="small text-muted">Explain how this affected you</p>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Be Accurate</strong>
+                            <p class="small text-muted">Only include verified information</p>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Attach Evidence</strong>
+                            <p class="small text-muted">Photos, docs, or recordings</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-3 bg-info bg-opacity-10">
+                <div class="card-body">
+                    <h6 class="card-title">Need Help?</h6>
+                    <p class="small mb-0">Call our helpline or visit the nearest legal assistance center</p>
+                    <a href="/helplines/" class="btn btn-sm btn-info mt-2">View Helplines</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

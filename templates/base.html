@@ -1,0 +1,353 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NyayaSetu - Citizen Empowerment Portal{% endblock %}</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary-blue: #0b2259;
+            --gradient-blue: linear-gradient(135deg, #0b2259 0%, #173880 100%);
+            --accent-gold: #d97706;
+            --accent-teal: #0f766e;
+            --bg-light: #f4f6fa;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Premium Balanced Navbar Architecture */
+        .navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5ee;
+            padding: 0.8rem 0; /* Balanced vertical padding */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.03);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem; /* Reduced to avoid wrapping */
+            letter-spacing: -0.5px;
+            color: var(--primary-blue) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-link {
+            color: #475569 !important;
+            font-size: 1rem; /* Reduced */
+            font-weight: 600;
+            margin: 0 0.2rem; /* Reduced to stop wrap */
+            padding: 0.5rem 0.4rem !important;
+            transition: all 0.2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            white-space: nowrap; /* Prevent icons and text from stacking */
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: #f1f5f9;
+            color: var(--primary-blue) !important;
+            border-radius: 6px;
+        }
+
+        /* Architectural Dropdown Menus */
+        .dropdown-menu {
+            padding: 1.5rem;
+            border-radius: 12px !important;
+            border: 1px solid #e1e5ee !important;
+            box-shadow: 0 25px 50px -12px rgba(11, 34, 89, 0.15) !important;
+            min-width: 280px;
+            margin-top: 15px !important;
+        }
+        
+        .dropdown-item {
+            font-weight: 600 !important;
+            font-size: 1.05rem;
+            padding: 0.75rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            color: #334155;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8fafc;
+            color: var(--primary-blue);
+            transform: translateX(4px);
+        }
+        .dropdown-divider { margin: 0.75rem 0; opacity: 0.1; }
+
+        /* Structured Cards */
+        .card {
+            border: 1px solid #e1e5ee;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+            background: #ffffff;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(11, 34, 89, 0.1);
+            border-color: #cbd5e1;
+        }
+
+        /* Neo-Corporate Global Buttons */
+        .btn-neo {
+            background: var(--gradient-blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem; /* Reduced to stop wrap */
+            padding: 0.5rem 1rem;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .btn-neo:hover { box-shadow: 0 6px 12px rgba(11, 34, 89, 0.2); color: #fff;}
+        .btn-outline-neo {
+            background: #fff;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.4rem 1rem;
+            transition: all 0.2s;
+        }
+        .btn-outline-neo:hover {
+            background: #f4f6fa;
+            color: #0b2259;
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+        }
+        
+        footer h5 {
+            color: #f8fafc;
+            font-weight: 600;
+        }
+
+        footer a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        footer a:hover {
+            color: #38bdf8;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-bank"></i> NyayaSetu
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center flex-nowrap" style="gap: 0.2rem;">
+                    
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house"></i> Home</a></li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="learnDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-book"></i> Rights
+                        </a>
+                        <ul class="dropdown-menu shadow-lg border-0 rounded-3 mt-2">
+                            <li><a class="dropdown-item fw-medium py-2" href="{% url 'rights:right_list' %}"><i class="bi bi-book me-2 text-primary"></i> Fundamental Rights</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{% url 'women_safety:list' %}"><i class="bi bi-shield-lock me-2 text-primary"></i> Women Safety Laws</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{% url 'rights:workplace_laws_list' %}"><i class="bi bi-building me-2 text-primary"></i> Corporate & Workplace Laws</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{% url 'regions:list' %}"><i class="bi bi-map me-2 text-primary"></i> State/Regional Laws</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{% url 'violations:list' %}"><i class="bi bi-exclamation-triangle me-2 text-primary"></i> Violations & Consequences</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{% url 'violations:how_to_complain' %}"><i class="bi bi-arrow-return-right me-2 text-primary"></i> Where to Complain Matrix</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{% url 'violations:traffic_guide' %}"><i class="bi bi-stoplights me-2 text-primary"></i> Traffic Rules & e-Challan</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-file-earmark-text"></i> Govt Services
+                        </a>
+                        <ul class="dropdown-menu shadow-lg border-0 rounded-3 mt-2">
+                            <li><a class="dropdown-item fw-medium py-2" href="/documents/">Document Guides</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="/services/">Apply Online</a></li>
+                            {% if user.is_authenticated %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="/services/my/">My Applications</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="complaintsDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-exclamation-triangle"></i> Complaints
+                        </a>
+                        <ul class="dropdown-menu shadow-lg border-0 rounded-3 mt-2">
+                            <li><a class="dropdown-item fw-medium py-2" href="/complaints/file/">File Complaint</a></li>
+                            {% if user.is_authenticated %}
+                            <li><a class="dropdown-item fw-medium py-2" href="/complaints/my/">Track Status</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/police-stations/"><i class="bi bi-geo-alt"></i> Police</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/helplines/"><i class="bi bi-telephone"></i> Helplines</a>
+                    </li>
+                    {% endif %}
+
+                     <li class="nav-item ms-xl-2">
+                        <div id="google_translate_element"></div>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown ms-xl-2">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 shadow-sm" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" style="border: 1px solid #e1e5ee; border-radius: 8px; padding: 0.5rem 1rem !important; background: #fff;">
+                            <i class="bi bi-person-circle fs-5" style="color: #64748b;"></i> 
+                            <span class="fw-bold" style="color: #1e293b;">{{ user.first_name|default:user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
+                            <li><a class="dropdown-item fw-medium py-2" href="/accounts/profile/"><i class="bi bi-person-badge me-2 text-primary"></i> Profile</a></li>
+                            {% if user.is_staff %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-medium text-danger py-2" href="/admin/"><i class="bi bi-shield-lock me-2"></i> Admin Panel</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="/accounts/logout/"><i class="bi bi-box-arrow-right me-2 text-secondary"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link border rounded-pill px-4 mx-2" href="/accounts/login/">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary rounded-pill px-4" href="/accounts/register/">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Global Messages -->
+    {% if messages %}
+    <div class="container mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm" role="alert">
+            <i class="bi bi-info-circle me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content Injection -->
+    <main class="py-5">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Professional Footer -->
+    <footer class="pt-5 pb-3 mt-auto">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4">
+                    <h5 class="mb-3"><i class="bi bi-bank me-2"></i>NyayaSetu</h5>
+                    <p class="pe-4">A unified citizen empowerment platform combining legal awareness, rights education, and government service guidance into a single digital ecosystem.</p>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="mb-3">Explore</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'rights:right_list' %}">Fundamental Rights</a></li>
+                        <li class="mb-2"><a href="/documents/">Govt Documents</a></li>
+                        <li class="mb-2"><a href="{% url 'regions:list' %}">State Laws</a></li>
+                        <li class="mb-2"><a href="{% url 'rights:workplace_laws_list' %}">Corporate Laws</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="mb-3">Take Action</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/complaints/file/">File Complaint</a></li>
+                        <li class="mb-2"><a href="/services/">Apply for Services</a></li>
+                        <li class="mb-2"><a href="/helplines/">Emergency Help</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h5 class="mb-3">Contact Support</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i> support@nyayasetu.gov.in</li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i> 1800-NYAYA-HELP</li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> New Delhi, India</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3 border-secondary">
+            <div class="text-center">
+                <small>&copy; 2026 NyayaSetu Digital Portal. All Rights Reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'hi,te,en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

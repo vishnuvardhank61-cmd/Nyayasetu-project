@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ law.title }} - Regional Laws - NyayaSetu{% endblock %}
+
+{% block content %}
+<div style="padding: 40px 0;">
+    <!-- Back Button -->
+    <a href="/regional-laws/" style="color: #38bdf8; text-decoration: none; font-weight: bold; margin-bottom: 20px; display: inline-block;">← Back to Regional Laws</a>
+
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #8b5cf6 0%, #0f172a 100%); padding: 40px; border-radius: 8px; color: white; margin-bottom: 30px;">
+        <p style="margin: 0; font-size: 14px; opacity: 0.9;">{{ law.state.name }}</p>
+        <h1 style="margin: 15px 0 0; font-size: 42px;">🗺️ {{ law.title }}</h1>
+    </div>
+
+    <!-- Main Content -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; align-items: start;">
+        <!-- Left Column -->
+        <div>
+            <!-- Overview -->
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">📋 Overview</h2>
+                <p style="color: #666; line-height: 1.8; margin: 0;">{{ law.description }}</p>
+            </div>
+
+            <!-- Key Provisions -->
+            <div style="background: #f5f3ff; padding: 25px; border-radius: 8px; border-left: 4px solid #8b5cf6; margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">📑 Key Provisions</h2>
+                <p style="color: #555; line-height: 1.8; margin: 0;">{{ law.key_provisions }}</p>
+            </div>
+
+            <!-- Penalties -->
+            <div style="background: #fff5f5; padding: 25px; border-radius: 8px; border-left: 4px solid #e74c3c; margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">⚖️ Penalties & Punishments</h2>
+                <p style="color: #555; line-height: 1.8; margin: 0;">{{ law.penalties_punishments|default:"Contact a legal expert for detailed penalty information regarding this specific regional act." }}</p>
+            </div>
+
+            <!-- Application -->
+            <div style="background: #f0f9ff; padding: 25px; border-radius: 8px; border-left: 4px solid #38bdf8; margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">🎯 How to Comply</h2>
+                <p style="color: #555; line-height: 1.8; margin: 0;">{{ law.how_to_comply }}</p>
+            </div>
+        </div>
+
+        <!-- Right Column - Info -->
+        <div>
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); margin-bottom: 25px; position: sticky; top: 20px;">
+                <h3 style="color: #0f172a; margin-top: 0;">📌 Details</h3>
+                
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                    <p style="color: #999; margin: 0 0 5px; font-size: 12px; font-weight: bold;">STATE</p>
+                    <p style="color: #0f172a; margin: 0;">{{ law.state.name }}</p>
+                </div>
+
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                    <p style="color: #999; margin: 0 0 5px; font-size: 12px; font-weight: bold;">OFFICIAL ACT NAME</p>
+                    <p style="color: #0f172a; margin: 0;">{{ law.act_name }}</p>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <p style="color: #999; margin: 0 0 5px; font-size: 12px; font-weight: bold;">LAST UPDATED</p>
+                    <p style="color: #0f172a; margin: 0;">{{ law.created_at|date:"M Y" }}</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">
+                <h3 style="color: #0f172a; margin-top: 0;">🚀 Actions</h3>
+                
+                <a href="/complaints/file/" style="display: block; background: #38bdf8; color: white; padding: 12px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold; margin-bottom: 10px; transition: background 0.2s;" onmouseover="this.style.background='#0ea5e9'" onmouseout="this.style.background='#38bdf8'">
+                    📝 File Complaint
+                </a>
+
+                <a href="/regional-laws/" style="display: block; background: #95a3a6; color: white; padding: 12px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold; transition: background 0.2s;" onmouseover="this.style.background='#7f8c8d'" onmouseout="this.style.background='#95a3a6'">
+                    🗺️ All Regional Laws
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"Language: te\n"
+
+msgid "Home"
+msgstr "హోమ్"
+
+msgid "Rights"
+msgstr "హక్కులు"
+
+msgid "Fundamental Rights"
+msgstr "ప్రాథమిక హక్కులు"
+
+msgid "Women Safety Laws"
+msgstr "మహిళా భద్రతా చట్టాలు"
+
+msgid "Corporate & Workplace Laws"
+msgstr "కార్పొరేట్ & కార్యాలయ చట్టాలు"
+
+msgid "State/Regional Laws"
+msgstr "రాష్ట్ర/ప్రాంతీయ చట్టాలు"
+
+msgid "Violations & Consequences"
+msgstr "ఉల్లంఘనలు & పరిణామాలు"
+
+msgid "Where to Complain Matrix"
+msgstr "ఫిర్యాదు ఎక్కడ చేయాలో మ్యాట్రిక్స్"
+
+msgid "Traffic Rules & e-Challan"
+msgstr "ట్రాఫిక్ నియమ నిబంధనలు & ఇ-చలాన్"
+
+msgid "Govt Services"
+msgstr "ప్రభుత్వ సేవలు"
+
+msgid "Document Guides"
+msgstr "డాక్యుమెంట్ గైడ్‌లు"
+
+msgid "Apply Online"
+msgstr "ఆన్‌లైన్‌లో దరఖాస్తు చేసుకోండి"
+
+msgid "Complaints"
+msgstr "ఫిర్యాదులు"
+
+msgid "File Complaint"
+msgstr "ఫిర్యాదు చేయండి"
+
+msgid "Police"
+msgstr "పోలీస్"
+
+msgid "Helplines"
+msgstr "హెల్ప్‌లైన్‌లు"
+

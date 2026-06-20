@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Women Safety Rights - NyayaSetu{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">👩 Women Safety & Rights</h1>
+    <p class="lead text-muted">Understanding laws and protections for women's safety and rights</p>
+
+    {% if women_safety_rights %}
+    <div class="row">
+        {% for right in women_safety_rights %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ right.title }}</h5>
+                    <p class="card-text text-muted">{{ right.description|truncatewords:15 }}</p>
+                    <div class="mt-3">
+                        <small class="text-muted">📍 {{ right.get_category_display }}</small>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="/women-safety/{{ right.id }}/" class="btn btn-sm btn-primary w-100">Learn More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">No women safety rights data available yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+
+{% block title %}Traffic Rights & e-Challan Dashboard - NyayaSetu{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --traffic-red: #ef4444;
+        --traffic-yellow: #f59e0b;
+        --traffic-green: #10b981;
+        --traffic-blue: #3b82f6;
+    }
+
+    .hero-gradient {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-radius: 2rem;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .fines-table thead {
+        background-color: #f8fafc;
+    }
+
+    .search-focus:focus {
+        border-color: var(--traffic-blue);
+        box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+    }
+
+    .badge-pro {
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+        font-size: 0.7rem;
+    }
+
+    .legal-quote {
+        border-left: 4px solid var(--traffic-blue);
+        padding-left: 1.5rem;
+        font-style: italic;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Premium Hero Section -->
+    <div class="hero-gradient p-5 mb-5 shadow-2xl position-relative overflow-hidden">
+        <div class="row align-items-center position-relative z-1">
+            <div class="col-lg-7 text-white">
+                <span class="badge badge-pro bg-danger mb-3">Motor Vehicles Act (Amendment) 2019</span>
+                <h1 class="display-3 fw-bold mb-4">Traffic Rights <span class="text-primary">&</span> e-Challan Guide</h1>
+                <p class="lead opacity-75 mb-4">Navigate Indian roads with confidence. Know your rights during a stop, verify your digital documents, and manage challans legally.</p>
+                <div class="d-flex gap-3">
+                    <a href="#fines-section" class="btn btn-primary btn-lg px-4 rounded-pill">View Fines Table</a>
+                    <a href="#challan-portal" class="btn btn-outline-light btn-lg px-4 rounded-pill">Check e-Challans</a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-center">
+                <i class="bi bi-shield-shaded text-white opacity-25" style="font-size: 15rem;"></i>
+            </div>
+        </div>
+        <!-- Decorative blobs -->
+        <div class="position-absolute top-0 end-0 bg-primary opacity-10 rounded-circle" style="width: 300px; height: 300px; margin-top: -100px; margin-right: -100px;"></div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <!-- Quick Stats / Core Pillars -->
+        <div class="col-md-4">
+            <div class="card glass-card h-100 border-0 shadow-sm rounded-4 p-4">
+                <div class="step-number bg-primary text-white">1</div>
+                <h4 class="fw-bold">Digital Validity</h4>
+                <p class="text-muted">Digital copies in <strong>DigiLocker</strong> or <strong>mParivahan</strong> are legally equivalent to originals. Officers cannot deny them.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card glass-card h-100 border-0 shadow-sm rounded-4 p-4">
+                <div class="step-number bg-success text-white">2</div>
+                <h4 class="fw-bold">Key snatching is Illegal</h4>
+                <p class="text-muted">No officer is permitted to snatch vehicle keys or manhandle drivers. It is a violation of your personal liberty.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card glass-card h-100 border-0 shadow-sm rounded-4 p-4">
+                <div class="step-number bg-warning text-white">3</div>
+                <h4 class="fw-bold">Right to Identity</h4>
+                <p class="text-muted">You have the right to ask for an officer's ID if they are not in uniform or don't have a visible name badge.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step by Step Stop Guide -->
+    <div class="mb-5 py-4">
+        <h2 class="fw-bold mb-4 text-center">What to do if you are Pulled Over?</h2>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="text-center p-3">
+                    <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-sign-stop text-danger fs-1"></i>
+                    </div>
+                    <h6>1. Stop Safely</h6>
+                    <p class="small text-muted">Pull over to the side immediately without causing a hazard.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3 text-primary">
+                    <i class="bi bi-arrow-right d-none d-md-block float-end mt-4 opacity-25" style="font-size: 2rem;"></i>
+                    <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-person-badge text-primary fs-1"></i>
+                    </div>
+                    <h6 class="text-dark">2. Be Polite</h6>
+                    <p class="small text-muted">Acknowledge the officer. Keep your hands visible on the steering wheel/handle.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3">
+                    <i class="bi bi-arrow-right d-none d-md-block float-end mt-4 opacity-25" style="font-size: 2rem;"></i>
+                    <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-phone text-success fs-1"></i>
+                    </div>
+                    <h6>3. Show Docs</h6>
+                    <p class="small text-muted">Provide your physical or digital DL and RC when asked.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3">
+                    <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-receipt text-warning fs-1"></i>
+                    </div>
+                    <h6>4. Accept Challan</h6>
+                    <p class="small text-muted">If you are wrong, accept the receipt. If not, note details to contest in Lok Adalat.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Common Fines Table -->
+    <div id="fines-section" class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5">
+        <div class="card-header bg-white p-4 border-0">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3 class="fw-bold mb-0">Common Offenses & Fines</h3>
+                    <p class="text-muted small mb-0">Updated as per MVA (Amendment) 2019</p>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" id="finesSearch" class="form-control bg-light border-start-0 search-focus" placeholder="Search offense (e.g. Helmet, Seatbelt)...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover fines-table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4 py-3">Offense / Violation</th>
+                        <th>Standard Fine</th>
+                        <th>Old Fine</th>
+                        <th class="pe-4">Punishment / Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="finesBody">
+                    <tr>
+                        <td class="ps-4 fw-bold">Drunken Driving</td>
+                        <td><span class="text-danger">₹10,000</span></td>
+                        <td>₹2,000</td>
+                        <td class="pe-4">Up to 6 months jail (1st offense)</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Driving without License</td>
+                        <td><span class="text-danger">₹5,000</span></td>
+                        <td>₹500</td>
+                        <td class="pe-4">Vehicle may be impounded</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Riding without Helmet</td>
+                        <td><span class="text-danger">₹1,000</span></td>
+                        <td>₹100</td>
+                        <td class="pe-4">Disqualification of DL for 3 months</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Driving without Seatbelt</td>
+                        <td><span class="text-danger">₹1,000</span></td>
+                        <td>₹100</td>
+                        <td class="pe-4">Standard fine</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Overspeeding (LMV)</td>
+                        <td><span class="text-danger">₹1,000 - ₹2,000</span></td>
+                        <td>₹400</td>
+                        <td class="pe-4">Standard fine</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Using Phone during Driving</td>
+                        <td><span class="text-danger">₹5,000</span></td>
+                        <td>₹1,000</td>
+                        <td class="pe-4">Fine + Possible License suspension</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Blocking Emergency Vehicles</td>
+                        <td><span class="text-danger">₹10,000</span></td>
+                        <td>New</td>
+                        <td class="pe-4">Prison up to 6 months</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Dangerous Driving</td>
+                        <td><span class="text-danger">₹5,000</span></td>
+                        <td>₹1,000</td>
+                        <td class="pe-4">Standard fine</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Red Light Jumping</td>
+                        <td><span class="text-danger">₹1,000 - ₹5,000</span></td>
+                        <td>₹100</td>
+                        <td class="pe-4">Standard fine</td>
+                    </tr>
+                    <tr>
+                        <td class="ps-4 fw-bold">Minor Driving Vehicle</td>
+                        <td><span class="text-danger">₹25,000</span></td>
+                        <td>New</td>
+                        <td class="pe-4">Guardian jailed for 3 years; Vehicle registration cancelled</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Action Portal -->
+    <div id="challan-portal" class="row g-4 align-items-stretch">
+        <div class="col-md-7">
+            <div class="card h-100 border-0 shadow-lg rounded-4 p-5 bg-white">
+                <h3 class="fw-bold mb-4">Official e-Challan Portals</h3>
+                <p class="text-muted mb-5">NyayaSetu provides references to official Ministry of Road Transport (Parivahan) services. Always use the official government websites for financial transactions.</p>
+                
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <a href="https://echallan.parivahan.gov.in/" target="_blank" class="card text-center p-4 border bg-light text-decoration-none h-100 transition-all hover-shadow">
+                            <i class="bi bi-wallet2 fs-2 text-primary mb-2"></i>
+                            <h6 class="text-dark fw-bold mb-0">Pay Fines</h6>
+                            <small class="text-muted">Parivahan Portal</small>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="https://vahan.parivahan.gov.in/puc/views/PucCertificate.xhtml" target="_blank" class="card text-center p-4 border bg-light text-decoration-none h-100 transition-all hover-shadow">
+                            <i class="bi bi-cloud-check fs-2 text-success mb-2"></i>
+                            <h6 class="text-dark fw-bold mb-0">Check PUC</h6>
+                            <small class="text-muted">Pollution Status</small>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="https://vcourts.gov.in/virtualcourt/" target="_blank" class="card text-center p-4 border bg-light text-decoration-none h-100 transition-all hover-shadow">
+                            <i class="bi bi-bank fs-2 text-info mb-2"></i>
+                            <h6 class="text-dark fw-bold mb-0">Virtual Court</h6>
+                            <small class="text-muted">Contest Online</small>
+                        </a>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="{% url 'police_stations:list' %}" class="card text-center p-4 border bg-light text-decoration-none h-100 transition-all hover-shadow">
+                            <i class="bi bi-geo-alt fs-2 text-danger mb-2"></i>
+                            <h6 class="text-dark fw-bold mb-0">Traffic Offices</h6>
+                            <small class="text-muted">Find Location</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Right: Legal help tip -->
+        <div class="col-md-5">
+            <div class="card h-100 border-0 shadow-lg rounded-4 bg-primary text-white p-5">
+                <div class="mb-4">
+                    <i class="bi bi-info-circle-fill display-4"></i>
+                </div>
+                <h3 class="fw-bold mb-3">Pro Legal Tip: Lok Adalat</h3>
+                <p class="opacity-75 mb-4">If you have multiple pending traffic challans or believe a challan was issued wrongly (e.g., technical error), do not rush to pay. Wait for the <strong>Traffic Lok Adalat</strong> held regularly in most cities. Magistrates there often reduce fines significantly or dismiss technical errors on the spot to clear backlog.</p>
+                <div class="legal-quote opacity-90 border-white border-opacity-25 py-2">
+                    "Under Article 21, procedure established by law must be just, fair and reasonable. Arbitrary fines without evidence can be challenged."
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('finesSearch').addEventListener('keyup', function() {
+        let value = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#finesBody tr');
+        
+        rows.forEach(row => {
+            let offense = row.cells[0].textContent.toLowerCase();
+            if (offense.indexOf(value) > -1) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
+{% endblock %}

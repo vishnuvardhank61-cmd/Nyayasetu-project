@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ right.title }} - Women Safety - NyayaSetu{% endblock %}
+
+{% block content %}
+<div style="padding: 40px 0;">
+    <!-- Back Button -->
+    <a href="/women-safety/" style="color: #38bdf8; text-decoration: none; font-weight: bold; margin-bottom: 20px; display: inline-block;">← Back to Women Safety</a>
+
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #ec4899 0%, #0f172a 100%); padding: 40px; border-radius: 8px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0; font-size: 42px;">👩 {{ right.title }}</h1>
+        <p style="margin: 10px 0 0; opacity: 0.9; font-size: 16px;">Women's Rights & Protection Laws</p>
+    </div>
+
+    <!-- Main Content -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; align-items: start;">
+        <!-- Left Column -->
+        <div>
+            <!-- Description -->
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">📋 Overview</h2>
+                <p style="color: #666; line-height: 1.8; margin: 0;">{{ right.description }}</p>
+            </div>
+
+            <!-- Key Protections -->
+            <div style="background: #fce7f3; padding: 25px; border-radius: 8px; border-left: 4px solid #ec4899; margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">🛡️ Key Protections</h2>
+                <div style="color: #555; line-height: 1.8; margin: 0; white-space: pre-line;">{{ right.rights_provided }}</div>
+            </div>
+
+            <!-- Penalties for Violation -->
+            <div style="background: #fff5f5; padding: 25px; border-radius: 8px; border-left: 4px solid #e74c3c; margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">⚖️ Penalties for Violation</h2>
+                <div style="color: #555; line-height: 1.8; margin: 0; white-space: pre-line;">{{ right.penalties|default:"Legal penalties vary by specific offence severity. Refer to IPC/BNS for details." }}</div>
+            </div>
+
+            <!-- How to Report -->
+            <div style="background: #f0fdf4; padding: 25px; border-radius: 8px; border-left: 4px solid #10b981; margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">📢 How to Report</h2>
+                <div style="color: #555; line-height: 1.8; margin: 0; white-space: pre-line;">{{ right.how_to_get_help }}</div>
+            </div>
+        </div>
+
+        <!-- Right Column - Actions -->
+        <div>
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); position: sticky; top: 20px;">
+                <h3 style="color: #0f172a; margin-top: 0;">🚀 Take Action</h3>
+                
+                <a href="/helplines/" style="display: block; background: #ec4899; color: white; padding: 12px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold; margin-bottom: 10px; transition: background 0.2s;" onmouseover="this.style.background='#db2777'" onmouseout="this.style.background='#ec4899'">
+                    🚨 Emergency Helplines
+                </a>
+                
+                <a href="/complaints/file/" style="display: block; background: #38bdf8; color: white; padding: 12px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold; margin-bottom: 10px; transition: background 0.2s;" onmouseover="this.style.background='#0ea5e9'" onmouseout="this.style.background='#38bdf8'">
+                    📝 File a Complaint
+                </a>
+
+                <a href="/women-safety/" style="display: block; background: #95a3a6; color: white; padding: 12px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold; transition: background 0.2s;" onmouseover="this.style.background='#7f8c8d'" onmouseout="this.style.background='#95a3a6'">
+                    📚 View All Laws
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

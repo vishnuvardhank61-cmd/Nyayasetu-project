@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Emergency Helplines - NyayaSetu{% endblock %}
+
+{% block content %}
+<div style="padding: 40px 0;">
+    <h1 style="font-size: 36px; color: #0f172a; margin-bottom: 10px;">🚨 Emergency Helplines</h1>
+    <p style="color: #666; font-size: 16px; margin-bottom: 30px;">
+        24/7 support for emergencies and legal assistance. Call now for immediate help.
+    </p>
+
+    {% if helplines %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+            {% for helpline in helplines %}
+            <div style="border-left: 5px solid #e74c3c; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                    <h3 style="margin: 0; color: #0f172a; font-size: 16px;">{{ helpline.name }}</h3>
+                    <span style="background: #ffe5e5; color: #c0392b; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;">
+                        {{ helpline.get_category_display }}
+                    </span>
+                </div>
+
+                <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                    {{ helpline.description }}
+                </p>
+
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #0f172a;">📞 Contact:</strong>
+                        <p style="margin: 5px 0; color: #e74c3c; font-size: 18px; font-weight: bold;">{{ helpline.phone }}</p>
+                    </div>
+                    {% if helpline.phone_alternative %}
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #0f172a;">📱 Alternative:</strong>
+                        <p style="margin: 5px 0; color: #666;">{{ helpline.phone_alternative }}</p>
+                    </div>
+                    {% endif %}
+                    {% if helpline.email %}
+                    <div>
+                        <strong style="color: #0f172a;">✉️ Email:</strong>
+                        <p style="margin: 5px 0; color: #666; word-break: break-all;">{{ helpline.email }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div style="display: flex; gap: 10px; font-size: 13px;">
+                    <span style="background: #e8f4f8; color: #0f172a; padding: 5px 10px; border-radius: 4px;">
+                        ⏰ {{ helpline.get_scope_display }}
+                    </span>
+                    <span style="background: #e8f4f8; color: #0f172a; padding: 5px 10px; border-radius: 4px;">
+                        🌐 {{ helpline.languages }}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="background: #f0f9ff; padding: 30px; border-radius: 8px; text-align: center;">
+            <p style="color: #666; font-size: 16px;">No helplines available yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

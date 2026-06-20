@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - NyayaSetu{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Full-bleed reset for profile page */
+    main > .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    main.py-5 {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* 1. Profile Page Header - Unified with NyayaSetu Theme */
+    .profile-hero {
+        background: radial-gradient(100% 150% at 50% 0%, #0d5c75 0%, #0b2259 50%, #05102e 100%);
+        padding: 60px 20px 100px 20px;
+        text-align: center;
+        color: #ffffff;
+        position: relative;
+    }
+
+    .profile-hero::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 30px 30px;
+        opacity: 0.3;
+    }
+
+    /* 2. Content Container */
+    .profile-container {
+        max-width: 900px;
+        margin: -60px auto 80px auto;
+        position: relative;
+        z-index: 10;
+        padding: 0 20px;
+    }
+
+    /* 3. Personal Information Card - Refined Aesthetic */
+    .info-card {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e1e5ee;
+        box-shadow: 0 15px 40px -10px rgba(11, 34, 89, 0.1);
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+
+    .card-heading {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 35px;
+        letter-spacing: -0.5px;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 15px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-label {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .info-value {
+        color: #1e293b;
+        font-weight: 700;
+        font-size: 1.1rem;
+        word-break: break-all;
+    }
+
+    /* 4. Activity Statistics */
+    .activity-strip {
+        background: #f8fafc;
+        border: 1px solid #e1e5ee;
+        border-radius: 12px;
+        padding: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .activity-info h5 {
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .activity-info p {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .activity-count {
+        background: #ffffff;
+        border: 2px solid var(--primary-blue);
+        color: var(--primary-blue);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 10px rgba(11, 34, 89, 0.1);
+    }
+
+    /* management form */
+    .edit-section {
+        background: #ffffff;
+        border: 1px solid #e1e5ee;
+        border-radius: 12px;
+        padding: 30px;
+        margin-top: 30px;
+    }
+
+    .form-title {
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header Banner -->
+<section class="profile-hero">
+    <div class="container text-center">
+        <h2 class="fw-bolder">Account Portal</h2>
+        <p class="mb-0 opacity-75">Manage your digital identity and platform activity history.</p>
+    </div>
+</section>
+
+<!-- Content Area -->
+<section class="profile-container">
+
+    <!-- Information Card -->
+    <div class="info-card">
+        <h3 class="card-heading">Personal Information</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Full Name</span>
+                <span class="info-value">{{ user.get_full_name|default:user.username }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email Mapping</span>
+                <span class="info-value">{{ user.email|default:"Not Configured" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Member Since</span>
+                <span class="info-value">{{ date_joined|date:"M d, Y" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">System UID</span>
+                <span class="info-value">#{{ user_id }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Primary Identity</span>
+                <span class="info-value">{{ user.username }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Auth Provider</span>
+                <span class="info-value">NyayaSetu Secure</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Last Identity Access</span>
+                <span class="info-value">{{ last_login|date:"M d, Y H:i"|default:"First Session" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Tracking Section -->
+    <div class="info-card">
+        <h3 class="card-heading">Activity Tracking</h3>
+        
+        <div class="activity-strip">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 text-primary">
+                    <i class="bi bi-file-earmark-text fs-4"></i>
+                </div>
+                <div class="activity-info">
+                    <h5>Legal Complaints</h5>
+                    <p>Total recorded grievances filed via NyayaSetu</p>
+                </div>
+            </div>
+            <div class="activity-count">{{ complaint_count }}</div>
+        </div>
+
+        <div class="activity-strip">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle bg-success bg-opacity-10 p-3 text-success">
+                    <i class="bi bi-person-check fs-4"></i>
+                </div>
+                <div class="activity-info">
+                    <h5>Service Applications</h5>
+                    <p>Government certificates and documents applied for</p>
+                </div>
+            </div>
+            <div class="activity-count" style="border-color: #198754; color: #198754;">{{ application_count }}</div>
+        </div>
+    </div>
+
+    <!-- Data Management Section -->
+    <div class="edit-section shadow-sm">
+        <h4 class="form-title"><i class="bi bi-gear-fill text-primary"></i> Data Management</h4>
+        
+        {% if form.errors %}
+            <div class="alert alert-danger border-0 rounded-4 mb-4">
+                <h6 class="fw-bold mb-2"><i class="bi bi-exclamation-circle-fill me-2"></i> Update Failed</h6>
+                <ul class="mb-0 small">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li><strong>{{ field|title }}:</strong> {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="POST" class="mt-4">
+            {% csrf_token %}
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small text-muted text-uppercase">First Name</label>
+                    <input type="text" name="first_name" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" value="{{ form.first_name.value|default:user.first_name }}" style="padding: 12px; border-radius: 8px;">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Last Name</label>
+                    <input type="text" name="last_name" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" value="{{ form.last_name.value|default:user.last_name }}" style="padding: 12px; border-radius: 8px;">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Email Address</label>
+                    <input type="email" name="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" value="{{ form.email.value|default:user.email }}" style="padding: 12px; border-radius: 8px;">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Phone Vector</label>
+                    <input type="text" name="phone_number" class="form-control {% if form.phone_number.errors %}is-invalid{% endif %}" value="{{ form.phone_number.value|default:user.phone_number }}" style="padding: 12px; border-radius: 8px;">
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Physical Address</label>
+                    <textarea name="address" rows="3" class="form-control {% if form.address.errors %}is-invalid{% endif %}" style="padding: 12px; border-radius: 8px;">{{ form.address.value|default:user.address }}</textarea>
+                </div>
+                <div class="col-md-12 text-end">
+                    <button type="submit" class="btn btn-primary px-5 py-3 fw-bold" style="border-radius: 8px;">Update Identity File</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</section>
+
+{% endblock %}

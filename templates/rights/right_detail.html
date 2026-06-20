@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Article {{ right.article_number }} | NyayaSetu{% endblock %}
+
+{% block content %}
+<div style="background:white; padding:22px; border-radius:12px; box-shadow:0 3px 12px rgba(0,0,0,0.08);">
+    <h2 style="margin-top:0;">Article {{ right.article_number }} — {{ right.title }}</h2>
+
+    <h4>Legal Explanation</h4>
+    <p>{{ right.legal_explanation }}</p>
+
+    <h4>Simple Explanation</h4>
+    <p>{{ right.simple_explanation }}</p>
+
+    <h4>Real-life Violation Example</h4>
+    <p>{{ right.violation_example }}</p>
+
+    <h4>What to do if violated</h4>
+    <p>{{ right.what_to_do }}</p>
+
+    <h4>Where to complain</h4>
+    <p>{{ right.where_to_complain }}</p>
+
+    <h4>Court remedy</h4>
+    <p>{{ right.court_remedy }}</p>
+
+    <br>
+    <a href="/rights/" style="text-decoration:none; color:#1e3a8a; font-weight:600;">← Back to Rights List</a>
+</div>
+{% endblock %}

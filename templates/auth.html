@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - NyayaSetu</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --auth-blue: #0b2259;
+            --auth-blue-grad: linear-gradient(135deg, #0b2259 0%, #173880 100%);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling, everything is absolute edge-to-edge */
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+        }
+
+        /* Edge-to-Edge Split Screen Layout */
+        .auth-board {
+            position: relative;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh; 
+        }
+
+        /* Go back to homepage button */
+        .go-back-btn {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            z-index: 1000;
+            color: var(--auth-blue);
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .go-back-btn:hover {
+            transform: translateX(-5px);
+            color: #173880;
+        }
+
+        .auth-form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 5% 8%; /* Scale padding cleanly with screen size */
+            background: #fff;
+        }
+
+        .auth-form-container h1 {
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 5px;
+            font-size: 38px;
+            letter-spacing: -1px;
+        }
+
+        .auth-form-container p.subtitle {
+            color: #666;
+            margin-bottom: 35px;
+            font-size: 15px;
+        }
+
+        /* Form Fields Styling */
+        .custom-input-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+        .custom-input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .custom-input-group input, .custom-input-group textarea {
+            width: 100%;
+            padding: 12px 16px 12px 42px; 
+            background-color: #f9fbfd;
+            border: 1px solid #e1e5ee;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            color: #111;
+        }
+        .custom-input-group input:focus, .custom-input-group textarea:focus {
+            border-color: var(--auth-blue);
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(11, 34, 89, 0.1);
+        }
+        .input-icon {
+            position: absolute;
+            top: 33px;
+            left: 14px;
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .auth-btn {
+            background: var(--auth-blue-grad);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .auth-btn:hover { box-shadow: 0 10px 15px -3px rgba(11, 34, 89, 0.4); }
+        .auth-btn:active { transform: scale(0.98); }
+
+        /* ========== EXCESSIVELY SMOOTH SLIDING LOGIC ========== */
+
+        /* Default: Login State */
+        .sign-up-container {
+            left: 0;
+            opacity: 0;
+            z-index: 1;
+            transform: translateX(-20%); /* subtle parallax entrance */
+        }
+        .sign-in-container {
+            left: 50%; /* Login sits naturally on the Right Half */
+            opacity: 1;
+            z-index: 2;
+            transform: translateX(0);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 0; /* Overlay covers Left Half by default */
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+        }
+
+        .overlay {
+            background: var(--auth-blue-grad);
+            background-image: linear-gradient(135deg, rgba(11,34,89,0.95) 0%, rgba(23,56,128,0.95) 100%), url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z" fill="rgba(255,255,255,0.03)" fill-rule="evenodd"/></svg>');
+            color: #FFFFFF;
+            position: relative;
+            left: 0;
+            height: 100%;
+            width: 200%; /* Massive overlay to translate internally */
+            transform: translateX(0);
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            padding: 40px;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .overlay-left { left: 0; transform: translateX(0); }
+        .overlay-right { right: 0; transform: translateX(20%); }
+
+        /* ========== ACTIVATED STATE (Register State) ========== */
+        .auth-board.right-panel-active .sign-in-container {
+            transform: translateX(20%);
+            opacity: 0;
+            z-index: 1;
+        }
+        .auth-board.right-panel-active .sign-up-container {
+            transform: translateX(0);
+            opacity: 1;
+            z-index: 5;
+        }
+        .auth-board.right-panel-active .overlay-container {
+            transform: translateX(100%); /* Overlay moves to cover Right Half! */
+        }
+        .auth-board.right-panel-active .overlay {
+            transform: translateX(-50%);
+        }
+        .auth-board.right-panel-active .overlay-left {
+            transform: translateX(-20%);
+        }
+        .auth-board.right-panel-active .overlay-right {
+            transform: translateX(0);
+        }
+
+        /* Form Switcher Link */
+        .switch-mode { margin-top: 20px; text-align: center; font-size: 14px; color: #666; }
+        .switch-mode a { color: var(--auth-blue); font-weight: 700; text-decoration: none; cursor: pointer; }
+        .switch-mode a:hover { text-decoration: underline; }
+
+        /* CSS Errors */
+        .form-error { color: #dc3545; font-size: 12px; margin-top: 4px; font-weight: 600; display: block; }
+        .non-field-errors { background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; font-weight: 600; }
+
+        /* ========== 3D Cursor Tracking Robot Container ========== */
+        .perspective-container {
+            width: 100%;
+            height: 250px;
+            perspective: 1200px; 
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tracking-figure {
+            width: 180px;
+            height: 180px;
+            transform-style: preserve-3d;
+        }
+        .figure-eye { transition: transform 0.05s ease-out; }
+
+        /* Scrollable form internal */
+        .scrollable-form {
+            height: 100%;
+            overflow-y: auto;
+            padding-right: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .scrollable-form::-webkit-scrollbar { width: 6px; }
+        .scrollable-form::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
+
+        /* Mobile Fix */
+        @media (max-width: 900px) {
+            .auth-board { overflow-y: auto; }
+            .auth-form-container { width: 100%; padding: 40px 20px; }
+            .sign-in-container { left: 0; }
+            .overlay-container { display: none; /* Hide flashy animation on small screens for usability */ }
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-board {% if is_register %}right-panel-active{% endif %}" id="authBoard">
+    
+    <!-- REGISTER PANEL (Left side visibly revealed when ACTIVE) -->
+    <div class="auth-form-container sign-up-container">
+        
+        <a href="/" class="go-back-btn"><i class="bi bi-arrow-left"></i> Home</a>
+
+        <div class="scrollable-form pt-5 mt-4" style="justify-content: flex-start;">
+            <h1>Create Account</h1>
+            <p class="subtitle">Join NyayaSetu to track applications and rights.</p>
+            
+            <form action="{% url 'accounts:register' %}" method="POST" novalidate>
+                {% csrf_token %}
+                {% if register_form.non_field_errors %}
+                    <div class="non-field-errors">{% for error in register_form.non_field_errors %}{{ error }}{% endfor %}</div>
+                {% endif %}
+
+                <div class="row custom-input-group m-0 p-0 mb-3">
+                    <div class="col-6 ps-0">
+                        <label>First Name</label>
+                        <i class="bi bi-person input-icon text-muted" style="z-index: 10;"></i>
+                        {{ register_form.first_name }}
+                        {% if register_form.first_name.errors %}<span class="form-error">{{ register_form.first_name.errors.0 }}</span>{% endif %}
+                    </div>
+                    <div class="col-6 pe-0">
+                        <label>Last Name</label>
+                        <i class="bi bi-person input-icon text-muted" style="z-index: 10;"></i>
+                        {{ register_form.last_name }}
+                        {% if register_form.last_name.errors %}<span class="form-error">{{ register_form.last_name.errors.0 }}</span>{% endif %}
+                    </div>
+                </div>
+                
+                <div class="custom-input-group">
+                    <label>Username</label>
+                    <i class="bi bi-at input-icon"></i>
+                    {{ register_form.username }}
+                    {% if register_form.username.errors %}<span class="form-error">{{ register_form.username.errors.0 }}</span>{% endif %}
+                </div>
+
+                <div class="custom-input-group">
+                    <label>Email Address</label>
+                    <i class="bi bi-envelope input-icon"></i>
+                    {{ register_form.email }}
+                    {% if register_form.email.errors %}<span class="form-error">{{ register_form.email.errors.0 }}</span>{% endif %}
+                </div>
+
+                <div class="row custom-input-group m-0 p-0 mb-3">
+                    <div class="col-6 ps-0">
+                        <label>Password</label>
+                        <i class="bi bi-lock input-icon text-muted" style="z-index: 10;"></i>
+                        {{ register_form.password1 }}
+                        {% if register_form.password1.errors %}<span class="form-error">{{ register_form.password1.errors.0 }}</span>{% endif %}
+                    </div>
+                    <div class="col-6 pe-0">
+                        <label>Confirm</label>
+                        <i class="bi bi-lock-fill input-icon text-muted" style="z-index: 10;"></i>
+                        {{ register_form.password2 }}
+                        {% if register_form.password2.errors %}<span class="form-error">{{ register_form.password2.errors.0 }}</span>{% endif %}
+                    </div>
+                </div>
+
+                <div class="custom-input-group">
+                    <label>Phone Number</label>
+                    <i class="bi bi-telephone input-icon"></i>
+                    {{ register_form.phone_number }}
+                    {% if register_form.phone_number.errors %}<span class="form-error">{{ register_form.phone_number.errors.0 }}</span>{% endif %}
+                </div>
+
+                <button class="auth-btn mt-3" type="submit">Complete Registration</button>
+                <div class="switch-mode pb-5">
+                    Already have an account? <a onclick="toggleAuthPanel('login')">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <!-- LOGIN PANEL (Right side visibly by default) -->
+    <div class="auth-form-container sign-in-container">
+        <a href="/" class="go-back-btn" style="right: 30px; left: auto;">Home <i class="bi bi-arrow-right"></i></a>
+
+        <div>
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Log in to safely track your civic applications.</p>
+            
+            <form action="{% url 'accounts:login' %}" method="POST" novalidate>
+                {% csrf_token %}
+                {% if login_form.non_field_errors %}
+                    <div class="non-field-errors">{% for error in login_form.non_field_errors %}{{ error }}{% endfor %}</div>
+                {% endif %}
+
+                <div class="custom-input-group mt-4">
+                    <label>Email Address or Username</label>
+                    <i class="bi bi-envelope input-icon"></i>
+                    {{ login_form.username }}
+                    {% if login_form.username.errors %}<span class="form-error">{{ login_form.username.errors.0 }}</span>{% endif %}
+                </div>
+
+                <div class="custom-input-group mt-4 mb-4">
+                    <label>Password</label>
+                    <i class="bi bi-lock input-icon"></i>
+                    {{ login_form.password }}
+                    {% if login_form.password.errors %}<span class="form-error">{{ login_form.password.errors.0 }}</span>{% endif %}
+                </div>
+
+                <button class="auth-btn mt-4" type="submit">Secure Login</button>
+                
+                <div class="switch-mode mt-4">
+                    Don't have an account? <a onclick="toggleAuthPanel('register')">Register here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+    
+    <!-- OVERLAY PANEL (The dark blue mask with grid and Robot!) -->
+    <!-- Default: Overlay is on LEFT. When Active: Overlay slides to RIGHT. -->
+    <div class="overlay-container">
+        <div class="overlay">
+            
+            <!-- LEFT CONTENT -->
+            <div class="overlay-panel overlay-left">
+                <div class="perspective-container">
+                    <svg class="tracking-figure" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 180 C40 100, 160 100, 160 180 Z" fill="rgba(255,255,255,0.1)"/>
+                        <g class="robot-head" transform="translate(0,0)">
+                            <rect x="60" y="40" width="80" height="90" rx="20" fill="#ffffff" opacity="0.95" filter="drop-shadow(0 15px 15px rgba(0,0,0,0.5))"/>
+                            <rect x="65" y="55" width="70" height="35" rx="5" fill="#0b2259" />
+                            <circle cx="85" cy="72" r="7" fill="#3b82f6" class="figure-eye left-eye"/>
+                            <circle cx="115" cy="72" r="7" fill="#3b82f6" class="figure-eye right-eye"/>
+                            <circle cx="100" cy="110" r="4" fill="rgba(11, 34, 89, 0.4)"/>
+                            <rect x="90" y="118" width="20" height="2" fill="rgba(11, 34, 89, 0.4)"/>
+                        </g>
+                    </svg>
+                </div>
+                <h2 class="fw-bold fs-1 mb-3">Join NyayaSetu</h2>
+                <p class="px-5 mt-2" style="font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.6;">Create your secure portal identity to monitor your government records effortlessly.</p>
+                <button class="btn btn-outline-light rounded-pill px-5 py-3 mt-4 fw-bold shadow" onclick="toggleAuthPanel('register')" style="border-width: 2px; font-size: 16px;">Create Account</button>
+            </div>
+            
+            <!-- RIGHT CONTENT -->
+            <div class="overlay-panel overlay-right">
+                <div class="perspective-container">
+                    <svg class="tracking-figure" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 180 C40 100, 160 100, 160 180 Z" fill="rgba(255,255,255,0.1)"/>
+                        <g class="robot-head" transform="translate(0,0)">
+                            <rect x="60" y="40" width="80" height="90" rx="20" fill="#ffffff" opacity="0.95" filter="drop-shadow(0 15px 15px rgba(0,0,0,0.5))"/>
+                            <rect x="65" y="55" width="70" height="35" rx="5" fill="#0b2259" />
+                            <circle cx="85" cy="72" r="7" fill="#3b82f6" class="figure-eye left-eye"/>
+                            <circle cx="115" cy="72" r="7" fill="#3b82f6" class="figure-eye right-eye"/>
+                            <circle cx="100" cy="110" r="4" fill="rgba(11, 34, 89, 0.4)"/>
+                            <rect x="90" y="118" width="20" height="2" fill="rgba(11, 34, 89, 0.4)"/>
+                        </g>
+                    </svg>
+                </div>
+                <h2 class="fw-bold fs-1 mb-3">Welcome Back!</h2>
+                <p class="px-5 mt-2" style="font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.6;">To remain connected with your progress, please login with your personal info.</p>
+                <button class="btn btn-outline-light rounded-pill px-5 py-3 mt-4 fw-bold shadow" onclick="toggleAuthPanel('login')" style="border-width: 2px; font-size: 16px;">Sign In to Portal</button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+    const authBoard = document.getElementById('authBoard');
+    
+    window.toggleAuthPanel = function(target) {
+        if (target === 'register') {
+            authBoard.classList.add('right-panel-active');
+            window.history.replaceState({}, '', '/accounts/register/');
+        } else {
+            authBoard.classList.remove('right-panel-active');
+            window.history.replaceState({}, '', '/accounts/login/');
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('mousemove', function(e) {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            const rawMouseX = (e.clientX - centerX) / centerX;
+            const rawMouseY = (e.clientY - centerY) / centerY;
+            
+            const mouseX = Math.max(-1, Math.min(1, rawMouseX));
+            const mouseY = Math.max(-1, Math.min(1, rawMouseY));
+            
+            const figures = document.querySelectorAll('.tracking-figure');
+            const maxRotationX = 25; 
+            const maxRotationY = 35; 
+            
+            figures.forEach(figure => {
+                figure.style.transform = `rotateY(${mouseX * maxRotationY}deg) rotateX(${-mouseY * maxRotationX}deg)`;
+            });
+
+            const heads = document.querySelectorAll('.robot-head');
+            heads.forEach(head => {
+                head.style.transform = `translate(${mouseX * 10}px, ${mouseY * 10}px)`;
+            });
+
+            const eyes = document.querySelectorAll('.figure-eye');
+            const maxEyeX = 14;
+            const maxEyeY = 7;
+            
+            eyes.forEach(eye => {
+                eye.style.transform = `translate(${mouseX * maxEyeX}px, ${mouseY * maxEyeY}px)`;
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+
+{% block title %}Situation Engine - NyayaSetu{% endblock %}
+
+{% block extra_css %}
+<style>
+    .situation-hero {
+        background: radial-gradient(100% 150% at 50% 0%, #0d5c75 0%, #0b2259 50%, #05102e 100%);
+        padding: 60px 20px;
+        text-align: center;
+        color: white;
+    }
+    
+    .filter-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .filter-pill {
+        padding: 8px 20px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .filter-pill:hover, .filter-pill.active {
+        background: white;
+        color: #0b2259;
+    }
+    
+    .situation-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        background: white;
+        border: 1px solid #f1f5f9;
+        overflow: hidden;
+    }
+    
+    .situation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(11, 34, 89, 0.1);
+    }
+    
+    .cat-badge {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 4px 12px;
+        border-radius: 4px;
+        margin-bottom: 12px;
+        display: inline-block;
+    }
+    
+    .cat-traffic { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+    .cat-police { background: rgba(13, 110, 253, 0.1); color: #0d6efd; }
+    .cat-workplace { background: rgba(25, 135, 84, 0.1); color: #198754; }
+    .cat-domestic { background: rgba(214, 51, 132, 0.1); color: #d63384; }
+    
+    .situation-title {
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+    
+    .legal-status {
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+    
+    .status-allowed { color: #198754; }
+    .status-allowed { color: #198754; }
+    .status-illegal { color: #dc3545; }
+    
+    .hidden { display: none !important; }
+    .empty-state { display: none; text-align: center; padding: 50px 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="situation-hero shadow">
+    <div class="container">
+        <h1 class="fw-bolder mb-3">The Situation Engine</h1>
+        <p class="lead opacity-75 mx-auto" style="max-width: 700px;">
+            Don't look for laws. Describe your problem. Find your solution.
+        </p>
+        
+        <div class="row align-items-center bg-white p-2 rounded-3 shadow-sm mt-4 mx-auto" style="max-width: 800px; border: 1px solid #e1e5ee;">
+            <div class="col-md-7 border-end position-relative">
+                <i class="bi bi-search position-absolute text-muted" style="left: 20px; top: 50%; transform: translateY(-50%); font-size: 1.1rem;"></i>
+                <input type="text" id="searchInput" class="form-control border-0 shadow-none text-dark bg-transparent" placeholder="e.g. Police bribe, harassment..." style="padding-left: 45px; height: 45px; font-weight: 500;">
+            </div>
+            <div class="col-md-3 pe-md-0">
+                <select id="categorySelect" class="form-select border-0 shadow-none bg-transparent" style="height: 45px; font-weight: 500; color: #475569;">
+                    <option value="all">All Problems</option>
+                    {% for cat_val, cat_name in categories %}
+                        <option value="{{ cat_val }}">{{ cat_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 ps-md-2 mt-2 mt-md-0 d-grid">
+                <button type="button" id="searchBtn" class="btn btn-primary rounded-2 fw-bold" style="height: 45px;">Search</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row g-4" id="situationsContainer">
+        {% for situation in situations %}
+            <div class="col-md-6 col-lg-4 situation-card-wrapper" 
+                 data-category="{{ situation.category }}" 
+                 data-search="{{ situation.title|lower }} {{ situation.simple_explanation|lower }}">
+                <div class="situation-card p-4 border-0 shadow-sm h-100 d-flex flex-column">
+                    <span class="cat-badge cat-{{ situation.category }}">
+                        {{ situation.get_category_display }}
+                    </span>
+                    
+                    <h5 class="situation-title">{{ situation.title }}</h5>
+                    
+                    <div class="legal-status">
+                        {% if situation.is_legal %}
+                            <i class="bi bi-check-circle-fill status-allowed me-1"></i> 
+                            <span class="status-allowed">LEGAL / ALLOWED</span>
+                        {% else %}
+                            <i class="bi bi-x-circle-fill status-illegal me-1"></i> 
+                            <span class="status-illegal">ILLEGAL / VIOLATION</span>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        {{ situation.simple_explanation|truncatewords:20 }}
+                    </p>
+                    
+                    <div class="mt-auto">
+                        <a href="{% url 'violations:situation_detail' situation.id %}" class="btn btn-outline-primary w-100 fw-bold" style="border-radius: 8px;">
+                            What should I do? <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state">
+        <i class="bi bi-search mb-4 text-muted" style="font-size: 3rem;"></i>
+        <h3>No matching situations found.</h3>
+        <p class="text-muted">Try a different keyword or select 'All Problems'.</p>
+        <button id="resetSearch" class="btn btn-primary px-4 mt-3">Reset Search</button>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
+        const searchBtn = document.getElementById('searchBtn');
+        const cards = document.querySelectorAll('.situation-card-wrapper');
+        const emptyState = document.getElementById('emptyState');
+        const resetBtn = document.getElementById('resetSearch');
+
+        function filterCards() {
+            const query = searchInput.value.toLowerCase().trim();
+            const currentCategory = categorySelect.value;
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const searchData = card.getAttribute('data-search');
+                const categoryData = card.getAttribute('data-category');
+                
+                const matchesSearch = query === '' || searchData.includes(query);
+                const matchesCategory = currentCategory === 'all' || categoryData === currentCategory;
+
+                if (matchesSearch && matchesCategory) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        searchInput.addEventListener('input', filterCards);
+        categorySelect.addEventListener('change', filterCards);
+        searchBtn.addEventListener('click', filterCards);
+
+        resetBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            categorySelect.value = 'all';
+            filterCards();
+        });
+    });
+</script>
+{% endblock %}

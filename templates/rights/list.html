@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Fundamental Rights - NyayaSetu{% endblock %}
+
+{% block extra_css %}
+<style>
+    .rights-hero {
+        background: radial-gradient(100% 150% at 50% 0%, #0d5c75 0%, #0b2259 50%, #05102e 100%);
+        padding: 60px 20px;
+        text-align: center;
+        color: white;
+    }
+    
+    .right-card {
+        border: 1px solid #f1f5f9;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        background: white;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .right-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(11, 34, 89, 0.1);
+        border-color: #cbd5e1;
+    }
+    
+    .article-num {
+        background: #0b2259;
+        color: #38bdf8;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        display: inline-block;
+        margin-bottom: 12px;
+    }
+    
+    .right-title {
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 15px;
+        font-size: 1.25rem;
+    }
+    
+    .simple-explain {
+        color: #64748b;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        flex-grow: 1;
+    }
+
+    /* Category Filter Pills */
+    .filter-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    
+    .filter-pill {
+        padding: 8px 20px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+    
+    .filter-pill:hover, .filter-pill.active {
+        background: white;
+        color: #0b2259;
+    }
+    
+    .hidden { display: none !important; }
+    .empty-state { display: none; text-align: center; padding: 50px 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="rights-hero shadow">
+    <div class="container">
+        <h1 class="fw-bolder mb-3">Fundamental Rights</h1>
+        <p class="lead opacity-75 mx-auto" style="max-width: 700px;">
+            Articles 12–35: The ultimate legal shield for every citizen of India. Explained in simple, everyday language.
+        </p>
+        
+        <div class="row align-items-center bg-white p-2 rounded-3 shadow-sm mt-4 mx-auto" style="max-width: 800px; border: 1px solid #e1e5ee;">
+            <div class="col-md-7 border-end position-relative">
+                <i class="bi bi-search position-absolute text-muted" style="left: 20px; top: 50%; transform: translateY(-50%); font-size: 1.1rem;"></i>
+                <input type="text" id="searchInput" class="form-control border-0 shadow-none text-dark bg-transparent" placeholder="Search rights (e.g., Equality, Life)..." style="padding-left: 45px; height: 45px; font-weight: 500;">
+            </div>
+            <div class="col-md-3 pe-md-0">
+                <select id="categorySelect" class="form-select border-0 shadow-none bg-transparent" style="height: 45px; font-weight: 500; color: #475569;">
+                    <option value="all">All Rights</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 ps-md-2 mt-2 mt-md-0 d-grid">
+                <button type="button" id="searchBtn" class="btn btn-primary rounded-2 fw-bold" style="height: 45px;">Search</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h4 class="fw-bolder text-muted small text-uppercase">Constitutional Index</h4>
+        </div>
+    </div>
+
+    <div class="row g-4" id="rightsContainer">
+        {% for right in rights %}
+            <div class="col-md-6 col-lg-4 right-card-wrapper"
+                 data-category="{{ right.category_id }}"
+                 data-search="{{ right.title|lower }} {{ right.simple_explanation|lower }} article {{ right.article_number|lower }}">
+                <div class="right-card p-4 h-100 shadow-sm border-0 d-flex flex-column">
+                    <div class="article-num">Article {{ right.article_number }}</div>
+                    <h5 class="right-title">{{ right.title }}</h5>
+                    <p class="simple-explain">
+                        {{ right.simple_explanation|truncatewords:25 }}
+                    </p>
+                    <div class="mt-4 pt-3 border-top mt-auto">
+                        <a href="{% url 'rights:right_detail' right.id %}" class="btn btn-outline-primary w-100 fw-bold shadow-sm" style="border-radius: 8px;">
+                            Understand More <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state">
+        <i class="bi bi-book-half text-muted mb-3" style="font-size: 3rem;"></i>
+        <h5 class="text-muted">No matching articles found.</h5>
+        <button id="resetSearch" class="btn btn-outline-primary mt-3">Reset View</button>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const categorySelect = document.getElementById('categorySelect');
+        const searchBtn = document.getElementById('searchBtn');
+        const cards = document.querySelectorAll('.right-card-wrapper');
+        const emptyState = document.getElementById('emptyState');
+        const resetBtn = document.getElementById('resetSearch');
+
+        function filterCards() {
+            const query = searchInput.value.toLowerCase().trim();
+            const currentCategory = categorySelect.value;
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const searchData = card.getAttribute('data-search');
+                const categoryData = card.getAttribute('data-category');
+                
+                const matchesSearch = query === '' || searchData.includes(query);
+                const matchesCategory = currentCategory === 'all' || categoryData === currentCategory;
+
+                if (matchesSearch && matchesCategory) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Real-time filtering
+        searchInput.addEventListener('input', filterCards);
+        categorySelect.addEventListener('change', filterCards);
+        searchBtn.addEventListener('click', filterCards);
+
+        resetBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            categorySelect.value = 'all';
+            filterCards();
+        });
+    });
+</script>
+{% endblock %}

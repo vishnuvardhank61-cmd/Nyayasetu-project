@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Where to Complain - NyayaSetu{% endblock %}
+
+{% block extra_css %}
+<style>
+    .step-timeline {
+        position: relative;
+    }
+    .step-timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50px;
+        height: 100%;
+        width: 4px;
+        background: #e2e8f0;
+        z-index: 0;
+    }
+    .step-node {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 3rem;
+        display: flex;
+        gap: 2rem;
+    }
+    .step-icon {
+        width: 105px;
+        height: 105px;
+        min-width: 105px;
+        background: white;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2rem;
+        font-size: 2.5rem;
+    }
+    .step-content {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0,0,0,0.03);
+        flex: 1;
+        transition: transform 0.3s ease;
+    }
+    .step-node:hover .step-content {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .priority-high { border-left: 6px solid #ef4444; }
+    .priority-medium { border-left: 6px solid #f59e0b; }
+    .priority-low { border-left: 6px solid #3b82f6; }
+    .priority-nyaya { border: 2px solid #10b981; background: #f0fdf4; }
+
+    .route-label {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold mb-3">CITIZEN GUIDANCE SYSTEM</span>
+            <h1 class="display-4 fw-bold text-dark mb-3">Where Should I Complain?</h1>
+            <p class="lead text-muted">Choosing the correct authority is the first step towards justice. Use this decision-matrix to find your route.</p>
+        </div>
+    </div>
+
+    <div class="step-timeline col-lg-10 mx-auto">
+        <!-- Route 1: Police -->
+        <div class="step-node">
+            <div class="step-icon text-danger shadow-lg">
+                <i class="bi bi-shield-exclamation"></i>
+            </div>
+            <div class="step-content priority-high">
+                <span class="route-label text-danger">Immediate Action Required</span>
+                <h3 class="fw-bold text-dark">Local Police Station (FIR)</h3>
+                <p class="text-muted fs-5">For **Cognizable Offenses**—crimes where police can arrest without a warrant.</p>
+                <div class="row mt-4">
+                    <div class="col-md-6 border-end">
+                        <h6 class="fw-bold mb-3 text-dark">When to go here:</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i>Physical Assault or Threats</li>
+                            <li class="mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i>Theft, Robbery or Burglary</li>
+                            <li class="mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i>Severe Domestic Violence</li>
+                            <li><i class="bi bi-x-circle-fill text-danger me-2"></i>Accidents or Hit-and-Run</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 ps-md-4">
+                        <h6 class="fw-bold mb-3 text-dark">Pro Tip:</h6>
+                        <p class="small text-muted mb-0">If they refuse to file an FIR, you can send it via post to the Superintendent (SP) or approach a Magistrate under Section 156(3) CrPC.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route 2: NyayaSetu -->
+        <div class="step-node">
+            <div class="step-icon text-success shadow-lg">
+                <i class="bi bi-cpu-fill"></i>
+            </div>
+            <div class="step-content priority-nyaya shadow-sm">
+                <span class="route-label text-success">Recommended: Intelligent Routing</span>
+                <h3 class="fw-bold text-dark">NyayaSetu Digital Portal</h3>
+                <p class="text-muted fs-5">Safe, tracked, and analyzed by our **AI Violation Engine** to ensure you reach the right expert.</p>
+                <div class="row mt-4">
+                    <div class="col-md-7">
+                        <h6 class="fw-bold mb-3 text-dark">Why use NyayaSetu?</h6>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Auto-identifies which Fundamental Right was violated</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Provides standardized legal templates for your complaint</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Directly maps to the relevant Commission/Ombudsman</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-5 d-flex align-items-center justify-content-center">
+                        <a href="{% url 'complaints:file_complaint' %}" class="btn btn-success btn-lg px-4 py-3 rounded-pill fw-bold shadow-sm">
+                            Launch Portal <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route 3: Commissions -->
+        <div class="step-node">
+            <div class="step-icon text-warning shadow-lg">
+                <i class="bi bi-building-fill-check"></i>
+            </div>
+            <div class="route-panel h-100 p-5 bg-white shadow-sm border rounded-4">
+                <span class="route-label text-warning">Specialized Civil Matters</span>
+                <h3 class="fw-bold text-dark">Statutory Commissions</h3>
+                <p class="text-muted fs-5">For violations that aren't necessarily 'criminal' but harm your dignity, rights, or consumer safety.</p>
+                <div class="row mt-4 g-3">
+                    <div class="col-sm-6 col-md-4">
+                        <a href="https://www.ncw.nic.in/" target="_blank" class="text-decoration-none transition-hover d-block h-100">
+                            <div class="p-3 bg-light rounded-3 text-center h-100 border-hover">
+                                <i class="bi bi-person-heart text-warning fs-3"></i>
+                                <h6 class="mt-2 mb-0 fw-bold small text-dark">Women's Commission</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6 col-md-4">
+                        <a href="https://e-daakhil.nic.in/" target="_blank" class="text-decoration-none transition-hover d-block h-100">
+                            <div class="p-3 bg-light rounded-3 text-center h-100 border-hover">
+                                <i class="bi bi-cart-x text-warning fs-3"></i>
+                                <h6 class="mt-2 mb-0 fw-bold small text-dark">Consumer Forum</h6>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-sm-6 col-md-4">
+                        <a href="https://nhrc.nic.in/" target="_blank" class="text-decoration-none transition-hover d-block h-100">
+                            <div class="p-3 bg-light rounded-3 text-center h-100 border-hover">
+                                <i class="bi bi-shield-check text-warning fs-3"></i>
+                                <h6 class="mt-2 mb-0 fw-bold small text-dark">NHRC (Human Rights)</h6>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route 4: Courts -->
+        <div class="step-node">
+            <div class="step-icon text-primary shadow-lg">
+                <i class="bi bi-bank2"></i>
+            </div>
+            <div class="step-content priority-low">
+                <span class="route-label text-primary">Ultimate Constitutional Remedy</span>
+                <h3 class="fw-bold text-dark">The Constitutional Courts (Writs)</h3>
+                <p class="text-muted fs-5">When the **State itself** is the violator, you approach the Courts directly under Articles 32 or 226.</p>
+                <div class="row mt-4">
+                    <div class="col-md-6 border-end">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-dot fs-2 text-primary"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">High Court (Article 226)</h6>
+                                <p class="small text-muted">Broadest powers. Can issue writs for fundamental rights AND other legal rights.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ps-md-4">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-dot fs-2 text-danger"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Supreme Court (Article 32)</h6>
+                                <p class="small text-muted">Guaranteed remedy for Fundamental Rights. The "Heart and Soul" of the Constitution.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Final Call to Action -->
+    <div class="bg-dark rounded-4 p-5 text-center text-white shadow-lg mt-5 overflow-hidden position-relative">
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary opacity-10"></div>
+        <div class="position-relative z-1">
+            <h2 class="fw-bold mb-3">Still haven't decided?</h2>
+            <p class="opacity-75 mb-4 mx-auto" style="max-width: 600px;">Our Situation Engine can analyze your specific 1-on-1 conflict and tell you exactly where to go. It's free, anonymous, and powered by legal logic.</p>
+            <a href="{% url 'violations:list' %}" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold">Use Situation Engine</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

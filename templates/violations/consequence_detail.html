@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+
+{% block title %}Consequences for Article {{ right.article_number }} - NyayaSetu{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-lg-10">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'violations:list' %}" class="text-decoration-none">Rights Violations</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Article {{ right.article_number }}</li>
+            </ol>
+        </nav>
+
+        <!-- Header Section -->
+        <div class="card border-0 shadow-sm rounded-4 mb-5 bg-danger bg-opacity-10">
+            <div class="card-body p-4 p-md-5">
+                <h6 class="text-danger fw-bold text-uppercase tracking-wide mb-2">Consequence Profile for</h6>
+                <h1 class="display-6 fw-bolder text-dark mb-3">{{ right.title }} (Article {{ right.article_number }})</h1>
+                
+                <div class="d-flex gap-3 mt-4">
+                    <a href="{% url 'complaints:file_complaint' %}" class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm px-4">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Report Violation
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Column: Effects -->
+            <div class="col-md-6">
+                <!-- Immediate Effects -->
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-4 bg-white">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                            <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                                <i class="bi bi-lightning-charge-fill text-warning fs-4"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0 text-dark">Immediate Effects</h3>
+                        </div>
+                        <ul class="list-unstyled mb-0 fs-6 text-muted lh-lg">
+                            {% for line in consequence.immediate_effects.splitlines %}
+                                {% if line %}<li class="mb-3"><i class="bi bi-x-circle text-danger me-2"></i>{{ line }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <!-- Long-term Effects -->
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-4 bg-white">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                            <div class="rounded-circle bg-secondary bg-opacity-10 p-3 me-3">
+                                <i class="bi bi-clock-history text-secondary fs-4"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0 text-dark">Long-Term Impact</h3>
+                        </div>
+                        <ul class="list-unstyled mb-0 fs-6 text-muted lh-lg">
+                            {% for line in consequence.long_term_effects.splitlines %}
+                                {% if line %}<li class="mb-3"><i class="bi bi-calendar-x text-secondary me-2"></i>{{ line }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Width: Legal & Compensation -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4 mt-4 bg-success bg-opacity-10 border border-success border-opacity-25">
+            <div class="card-body p-4 p-md-5">
+                <div class="row align-items-center mb-4">
+                    <div class="col-md-1">
+                        <i class="bi bi-bank text-success display-4"></i>
+                    </div>
+                    <div class="col-md-11">
+                        <h2 class="fw-bold mb-0 text-dark">Legal Remedies & Compensation</h2>
+                        <p class="text-muted mb-0">The law is on your side. Here is what you are entitled to claim.</p>
+                    </div>
+                </div>
+                
+                <hr class="border-success border-opacity-25 mb-4">
+                
+                <div class="row g-4 text-dark fs-5 lh-lg">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-3 text-success">Official Legal Action</h5>
+                        <ul class="list-unstyled">
+                            {% for line in consequence.legal_remedies.splitlines %}
+                                {% if line %}<li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ line }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-3 text-success">Compensation Options</h5>
+                        <ul class="list-unstyled">
+                            {% for line in consequence.compensation_options.splitlines %}
+                                {% if line %}<li class="mb-2"><i class="bi bi-cash-stack text-success me-2"></i>{{ line }}</li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prevention Measures -->
+        <div class="card border-0 shadow-sm rounded-4 bg-white">
+            <div class="card-body p-4 p-md-5">
+                <h3 class="fw-bold mb-4 border-bottom pb-3"><i class="bi bi-shield-check text-primary me-2"></i> Prevention Measures</h3>
+                <div class="fs-6 text-muted lh-lg">
+                    <p>{{ consequence.prevention_measures|linebreaksbr }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

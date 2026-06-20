@@ -1,0 +1,450 @@
+{% extends "base.html" %}
+
+
+{% block title %}Police Station Locator - NyayaSetu{% endblock %}
+
+{% block extra_css %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+<style>
+    .map-container {
+        height: 600px;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    }
+    
+    .station-list-container {
+        height: 600px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+    
+    /* Custom Scrollbar for list */
+    .station-list-container::-webkit-scrollbar {
+        width: 8px;
+    }
+    .station-list-container::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    .station-list-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .station-list-container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    .station-card {
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    .station-card:hover, .station-card.active {
+        border-color: #3b82f6 !important;
+        background-color: #f8fafc;
+        transform: translateX(5px);
+    }
+
+    /* Custom Marker Styles */
+    .marker-pin {
+        width: 30px;
+        height: 30px;
+        border-radius: 50% 50% 50% 0;
+        background: #c30b02;
+        position: absolute;
+        transform: rotate(-45deg);
+        left: 50%;
+        top: 50%;
+        margin: -15px 0 0 -15px;
+    }
+
+    .marker-pin::after {
+        content: '';
+        width: 24px;
+        height: 24px;
+        margin: 3px 0 0 3px;
+        background: #fff;
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    .custom-div-icon i {
+        position: absolute;
+        width: 22px;
+        font-size: 16px;
+        left: 4px;
+        top: 3px;
+        text-align: center;
+    }
+
+    .icon-police .marker-pin { background: #1d4ed8; } /* Blue */
+    .icon-traffic .marker-pin { background: #10b981; } /* Green */
+    .icon-registration .marker-pin { background: #f59e0b; } /* Amber */
+    .icon-meeseva .marker-pin { background: #8b5cf6; } /* Purple */
+    .icon-mandal .marker-pin { background: #ec4899; } /* Pink */
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-5 fw-bold text-dark mb-3"><i class="bi bi-geo-alt-fill text-primary me-2"></i> Police Station Locator</h1>
+        <p class="lead text-muted">Quickly locate and contact the nearest police stations in your state or city using our integrated map system.</p>
+    </div>
+</div>
+
+<!-- Search Form -->
+<div class="card shadow-sm border-0 mb-4 rounded-4 bg-white">
+    <div class="card-body p-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label fw-bold text-muted">Select State</label>
+                <select name="state" class="form-select form-select-lg bg-light">
+                    <option value="">All States</option>
+                    {% for state in states %}
+                        <option value="{{ state.id }}" {% if state.id|stringformat:"i" == selected_state %}selected{% endif %}>{{ state.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label fw-bold text-muted">City / District</label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" name="city" value="{{ selected_city }}" class="form-control border-start-0 bg-light" placeholder="e.g., Mumbai">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Search</button>
+            </div>
+            <div class="col-12 text-center mt-3">
+                <button type="button" class="btn btn-outline-primary rounded-pill px-4" id="btnFindNearMe">
+                    <i class="bi bi-crosshair me-2"></i> Find Nearby Centers
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <!-- List View -->
+    <div class="col-lg-5">
+        <h4 class="fw-bold mb-3">{{ total }} Stations Found</h4>
+        
+        <div class="station-list-container pe-2">
+            {% for station in stations %}
+            <div class="card station-card border border-light shadow-sm rounded-4 mb-3" 
+                 data-id="{{ station.id }}" 
+                 data-name="{{ station.name }}" 
+                 data-type="{{ station.office_type }}"
+                 data-lat="{{ station.latitude|default:0 }}" 
+                 data-lng="{{ station.longitude|default:0 }}"
+                 data-address="{{ station.address }}"
+                 data-phone="{{ station.phone }}">
+                 
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="fw-bold text-dark mb-0">{{ station.name }}</h5>
+                        <div class="text-end">
+                            <span class="badge bg-primary bg-opacity-10 text-primary d-block mb-1">{{ station.city }}</span>
+                            <span class="badge bg-success bg-opacity-10 text-success d-none distance-badge" id="dist-{{ station.id }}">-- km</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-muted small mb-3">📍 {{ station.address }}</p>
+                    
+                    <div class="d-flex gap-3 mb-3">
+                        {% if station.phone %}
+                        <div class="text-dark small"><i class="bi bi-telephone-fill text-success me-1"></i> {{ station.phone }}</div>
+                        {% endif %}
+                        <div class="text-dark small"><i class="bi bi-clock-fill text-warning me-1"></i> {{ station.opening_hours }}</div>
+                    </div>
+                    
+                    <a href="{% url 'police_stations:detail' station.id %}" class="btn btn-sm btn-outline-primary rounded-pill fw-medium details-link">View Full Details</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-5">
+                <i class="bi bi-building-slash text-muted opacity-50 display-1 mb-3"></i>
+                <h4 class="text-muted">No Stations Found</h4>
+                <p>Try broadening your search.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Map View -->
+    <div class="col-lg-7">
+        <!-- The div where the map will be embedded -->
+        <div id="leafletMap" class="map-container bg-light position-relative">
+            <div id="mapLoader" class="position-absolute top-50 start-50 translate-middle text-center text-muted z-3">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <h5>Loading Map...</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Location Consent Modal -->
+<div class="modal fade" id="locationConsentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-5 text-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-4 mb-4">
+                    <i class="bi bi-geo-alt-fill text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <h3 class="fw-bolder mb-3">Allow Location Access?</h3>
+                <p class="text-muted mb-4 px-3">
+                    We use your location to find the **nearest Police Stations, Traffic Offices, and Registration Centers** to help you faster.
+                    <br><br>
+                    <small>Your location is used only for this search and is not stored permanently.</small>
+                </p>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary btn-lg py-3 fw-bold rounded-3" id="btnAllowLocation">
+                        <i class="bi bi-check-circle me-2"></i> Enable Location
+                    </button>
+                    <button type="button" class="btn btn-light btn-lg py-3 fw-bold text-muted rounded-3" data-bs-dismiss="modal">
+                        Maybe Later
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Leaflet JS Integration -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    let map;
+    let markersLayer;
+    let markers = [];
+    const locations = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.station-card');
+        
+        cards.forEach(card => {
+            locations.push({
+                id: card.getAttribute('data-id'),
+                name: card.getAttribute('data-name'),
+                type: card.getAttribute('data-type'),
+                lat: parseFloat(card.getAttribute('data-lat')),
+                lng: parseFloat(card.getAttribute('data-lng')),
+                address: card.getAttribute('data-address'),
+                phone: card.getAttribute('data-phone')
+            });
+            
+            // Add click listener purely in JS
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.details-link')) return; // Ignore clicks on the view link
+                
+                const lat = parseFloat(card.getAttribute('data-lat'));
+                const lng = parseFloat(card.getAttribute('data-lng'));
+                const name = card.getAttribute('data-name');
+                moveToStation(lat, lng, name, card);
+            });
+        });
+
+        initMap();
+
+        // Location Consent Logic
+        const locationModal = new bootstrap.Modal(document.getElementById('locationConsentModal'));
+        document.getElementById('btnFindNearMe').addEventListener('click', () => {
+            locationModal.show();
+        });
+
+        document.getElementById('btnAllowLocation').addEventListener('click', () => {
+            locationModal.hide();
+            getUserLocation();
+        });
+    });
+
+    // Haversine formula to calculate distance in km
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius of the earth in km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return (R * c).toFixed(1);
+    }
+
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
+
+    function sortListByDistance(userLat, userLng) {
+        const container = document.querySelector('.station-list-container');
+        const cards = Array.from(document.querySelectorAll('.station-card'));
+        
+        cards.forEach(card => {
+            const lat = parseFloat(card.getAttribute('data-lat'));
+            const lng = parseFloat(card.getAttribute('data-lng'));
+            if (lat && lng) {
+                const dist = calculateDistance(userLat, userLng, lat, lng);
+                card.setAttribute('data-distance', dist);
+                const badge = card.querySelector('.distance-badge');
+                if (badge) {
+                    badge.innerText = `${dist} km away`;
+                    badge.classList.remove('d-none');
+                }
+            } else {
+                card.setAttribute('data-distance', 99999);
+            }
+        });
+
+        // Sort DOM elements
+        cards.sort((a, b) => parseFloat(a.getAttribute('data-distance')) - parseFloat(b.getAttribute('data-distance')));
+        
+        // Append in sorted order
+        cards.forEach(card => container.appendChild(card));
+        
+        // Auto-scroll to top of list
+        container.scrollTop = 0;
+    }
+
+    function getUserLocation() {
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser");
+            return;
+        }
+
+        const loader = document.getElementById('mapLoader');
+        loader.style.display = 'block';
+        loader.querySelector('h5').innerText = 'Detecting your location...';
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            
+            loader.style.display = 'none';
+            map.setView([userLat, userLng], 13);
+            
+            // Add a temporary marker for the user
+            L.circle([userLat, userLng], {
+                color: '#0d6efd',
+                fillColor: '#0d6efd',
+                fillOpacity: 0.3,
+                radius: 500
+            }).addTo(map).bindPopup("<b>You are here</b>").openPopup();
+
+            // Refresh list with distance sorting
+            sortListByDistance(userLat, userLng);
+
+        }, (error) => {
+            loader.style.display = 'none';
+            alert("Could not get your location: " + error.message);
+        });
+    }
+
+    function initMap() {
+        // Default center (India)
+        const center = [20.5937, 78.9629];
+        
+        // Initialize Map
+        map = L.map('leafletMap').setView(center, 5);
+        document.getElementById('mapLoader').style.display = 'none';
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Create a layer group for markers
+        markersLayer = L.featureGroup().addTo(map);
+        let validMarkers = 0;
+
+        locations.forEach(loc => {
+            if (loc.lat !== 0 && loc.lng !== 0) {
+                // Determine icon color/class based on type
+                let iconClass = 'icon-police';
+                let iconName = 'bi-shield-shaded';
+                let typeLabel = 'Police Station';
+                
+                if (loc.type === 'traffic') { 
+                    iconClass = 'icon-traffic'; 
+                    iconName = 'bi-sign-stop-fill';
+                    typeLabel = 'Traffic Police'; 
+                } else if (loc.type === 'registration') { 
+                    iconClass = 'icon-registration'; 
+                    iconName = 'bi-file-earmark-text-fill';
+                    typeLabel = 'Registration Office'; 
+                } else if (loc.type === 'meeseva') { 
+                    iconClass = 'icon-meeseva'; 
+                    iconName = 'bi-buildings-fill';
+                    typeLabel = 'MeeSeva Center'; 
+                } else if (loc.type === 'mandal') { 
+                    iconClass = 'icon-mandal'; 
+                    iconName = 'bi-bank2';
+                    typeLabel = 'MRO Office'; 
+                }
+
+                // Create custom div icon
+                const customIcon = L.divIcon({
+                    className: 'custom-div-icon ' + iconClass,
+                    html: `<div class='marker-pin'></div><i class='bi ${iconName}'></i>`,
+                    iconSize: [30, 42],
+                    iconAnchor: [15, 42]
+                });
+
+                const marker = L.marker([loc.lat, loc.lng], { icon: customIcon });
+                
+                const popupContent = `
+                    <div style="padding: 10px; min-width: 200px;">
+                        <span class="badge rounded-pill mb-2 ${iconClass === 'icon-police' ? 'bg-primary' : (iconClass === 'icon-traffic' ? 'bg-success' : 'bg-warning')} bg-opacity-10 ${iconClass === 'icon-police' ? 'text-primary' : (iconClass === 'icon-traffic' ? 'text-success' : 'text-warning')}" style="font-size: 0.65rem; border: 1px solid currentColor;">${typeLabel}</span>
+                        <h6 style="font-weight: 700; margin-bottom: 5px; color: #1e293b;">${loc.name}</h6>
+                        <p style="font-size: 12px; color: #64748b; margin-bottom: 10px; line-height: 1.4;">${loc.address}</p>
+                        <div class="d-grid shadow-sm">
+                            <a href="/police-stations/${loc.id}/" class="btn btn-primary btn-sm rounded-2 fw-bold" style="font-size: 11px;">View Full Details</a>
+                        </div>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                marker.options.title = loc.name; 
+                
+                markersLayer.addLayer(marker);
+                markers.push(marker);
+                validMarkers++;
+            }
+        });
+
+        // Auto-zoom to fit all markers if any exist
+        if (validMarkers > 0) {
+            map.fitBounds(markersLayer.getBounds(), { padding: [50, 50] });
+            // Don't zoom in too far if there's only one marker
+            if (validMarkers === 1) {
+                map.setZoom(14);
+            }
+        }
+    }
+
+    // Called when user clicks a card in the list
+    function moveToStation(lat, lng, name, cardElement) {
+        if (!map || lat === 0 || lng === 0) return;
+        
+        map.setView([lat, lng], 16, { animate: true });
+        
+        // Find and trigger the corresponding marker popup
+        const marker = markers.find(m => m.options.title === name);
+        if (marker) {
+            marker.openPopup();
+        }
+        
+        // Highlight logic
+        document.querySelectorAll('.station-card').forEach(card => card.classList.remove('active'));
+        if (cardElement) {
+            cardElement.classList.add('active');
+        }
+    }
+</script>
+{% endblock %}

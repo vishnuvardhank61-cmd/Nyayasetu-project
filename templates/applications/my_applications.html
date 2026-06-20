@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+
+{% block title %}My Applications - NyayaSetu{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-lg-10 mx-auto">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'accounts:dashboard' %}" class="text-decoration-none">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Applications</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-4 mb-5">
+            <div>
+                <h1 class="display-6 fw-bold text-dark mb-1">My Government Services</h1>
+                <p class="text-muted fs-5 mb-0">Track the real-time status of your simulated applications.</p>
+            </div>
+            <a href="{% url 'applications:service_list' %}" class="btn btn-primary btn-lg rounded-pill shadow-sm fw-medium px-4">
+                <i class="bi bi-plus-circle me-2"></i> New Application
+            </a>
+        </div>
+
+        {% if applications %}
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-muted small fw-bold text-uppercase">
+                        <tr>
+                            <th scope="col" class="py-3 ps-4 border-0">Tracking ID</th>
+                            <th scope="col" class="py-3 border-0">Service Name</th>
+                            <th scope="col" class="py-3 border-0">Submitted On</th>
+                            <th scope="col" class="py-3 border-0">Last Updated</th>
+                            <th scope="col" class="py-3 border-0">Status</th>
+                            <th scope="col" class="py-3 pe-4 border-0 text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="border-top-0">
+                        {% for app in applications %}
+                        <tr>
+                            <td class="ps-4 py-4">
+                                <span class="fw-bold text-dark user-select-all">{{ app.application_number }}</span>
+                            </td>
+                            <td class="py-4">
+                                <h6 class="mb-0 fw-semibold text-primary">{{ app.service.get_name_display }}</h6>
+                            </td>
+                            <td class="py-4 text-muted small">
+                                <i class="bi bi-calendar3 me-1"></i> {{ app.submitted_at|date:"M d, Y" }}
+                            </td>
+                            <td class="py-4 text-muted small">
+                                <i class="bi bi-clock-history me-1"></i> {{ app.updated_at|timesince }} ago
+                            </td>
+                            <td class="py-4">
+                                {% if app.status == 'submitted' %}
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-3 py-2 rounded-pill fw-medium"><i class="bi bi-arrow-right-circle"></i> Submitted</span>
+                                {% elif app.status == 'under_review' %}
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill fw-medium"><i class="bi bi-hourglass-split"></i> Under Review</span>
+                                {% elif app.status == 'approved' %}
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill fw-medium"><i class="bi bi-check-circle"></i> Approved</span>
+                                {% elif app.status == 'rejected' %}
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 rounded-pill fw-medium"><i class="bi bi-x-circle"></i> Rejected</span>
+                                {% elif app.status == 'completed' %}
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 rounded-pill fw-medium"><i class="bi bi-check-all"></i> Completed</span>
+                                {% endif %}
+                            </td>
+                            <td class="pe-4 py-4 text-end">
+                                <!-- Future Scope: Detailed Application view -->
+                                <button class="btn btn-outline-secondary btn-sm fw-medium rounded-pill" disabled>
+                                    View Details <i class="bi bi-chevron-right ms-1"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5 my-5 bg-white rounded-4 shadow-sm border border-light">
+            <i class="bi bi-inbox text-muted opacity-50 mb-4" style="font-size: 5rem;"></i>
+            <h3 class="fw-bold text-dark mb-2">No Applications Found</h3>
+            <p class="text-muted fs-5 mb-4 px-4">You haven't submitted any mock government service applications yet.</p>
+            <a href="{% url 'applications:service_list' %}" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm px-5">
+                Apply for a Service Now
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f8fafc;
+        transition: background-color 0.2s ease;
+    }
+</style>
+{% endblock %}

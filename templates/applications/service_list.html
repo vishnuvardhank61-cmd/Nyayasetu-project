@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Government Services - NyayaSetu{% endblock %}
+
+{% block extra_css %}
+<style>
+    .service-hero {
+        background: radial-gradient(circle at top right, #1e3a8a 0%, #0f172a 100%);
+        padding: 100px 0 80px 0;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-hero::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMiIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjA1KSIvPjwvc3ZnPg==') repeat;
+        opacity: 0.5;
+    }
+
+    .hero-content { position: relative; z-index: 1; }
+    
+    .service-card {
+        border-radius: 1.5rem;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        background: #ffffff;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1);
+        border-color: #cbd5e1;
+    }
+    
+    .service-card::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 4px;
+        background: linear-gradient(90deg, #3b82f6, #2dd4bf);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .service-card:hover::after { opacity: 1; }
+    
+    .service-tag {
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .tag-direct { background: #dcfce7; color: #166534; }
+    .tag-guide { background: #fef08a; color: #854d0e; box-shadow: 0 2px 10px rgba(234, 179, 8, 0.2); }
+    
+    .card-title-text { color: #0f172a; font-weight: 800; }
+    
+    .desc-text {
+        color: #64748b;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        flex-grow: 1;
+    }
+    
+    .stat-pill {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 12px 15px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .stat-icon-wrapper {
+        background: #e0f2fe;
+        color: #0284c7;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    .stat-text-group { display: flex; flex-direction: column; }
+    
+    .stat-label {
+        font-size: 0.65rem;
+        color: #64748b;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+    
+    .stat-value {
+        font-weight: 800;
+        color: #0f172a;
+        font-size: 0.95rem;
+    }
+
+    .btn-apply {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .btn-apply:hover {
+        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.6);
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="service-hero">
+    <div class="container hero-content">
+        <span class="badge bg-white bg-opacity-10 text-white border border-white border-opacity-25 px-4 py-2 rounded-pill fw-bold mb-4" style="letter-spacing: 1px;">CITIZEN SERVICES</span>
+        <h1 class="display-4 fw-bolder mb-3">Service Apply Portal</h1>
+        <p class="lead opacity-75 mx-auto" style="max-width: 650px;">
+            Apply for essential documents directly online or follow our simplified 'Educational Guides' for securely managing offline requirements.
+        </p>
+    </div>
+</section>
+
+<section class="container py-5" style="margin-top: -40px; position: relative; z-index: 10;">
+    <!-- Status Grid -->
+    <div class="row g-4 mb-5">
+        {% for service in services %}
+        <div class="col-md-6 col-lg-4">
+            <div class="service-card p-4 p-xl-5">
+                <div>
+                    {% if service.direct_apply %}
+                        <span class="service-tag tag-direct"><i class="bi bi-rocket-takeoff-fill me-2 fs-6"></i> Apply Directly</span>
+                    {% else %}
+                        <span class="service-tag tag-guide"><i class="bi bi-journal-bookmark-fill me-2 fs-6"></i> Educational Guide</span>
+                    {% endif %}
+                    
+                    <h3 class="card-title-text mb-3">{{ service.get_name_display }}</h3>
+                    <p class="desc-text mb-4">{{ service.description|truncatechars:120 }}</p>
+                </div>
+                
+                <div class="mt-auto">
+                    <div class="stat-pill mb-4">
+                        <div class="stat-icon-wrapper">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+                        <div class="stat-text-group">
+                            <span class="stat-label">Expected Timeline</span>
+                            <span class="stat-value">{{ service.processing_days }} Days Processing</span>
+                        </div>
+                    </div>
+                    
+                    {% if service.direct_apply %}
+                        <a href="{% url 'applications:apply' service.id %}" class="btn btn-primary btn-apply w-100 fw-bold py-3 rounded-4 text-uppercase" style="letter-spacing: 0.5px; font-size: 0.85rem;">
+                            Submit Application <i class="bi bi-arrow-right-circle-fill ms-2 fs-5 align-middle"></i>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'applications:apply' service.id %}" class="btn btn-dark w-100 fw-bold py-3 rounded-4 text-uppercase" style="letter-spacing: 0.5px; font-size: 0.85rem; transition: all 0.3s ease;">
+                            View Detailed Guide <i class="bi bi-file-earmark-text ms-2 fs-5 align-middle"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Tracking Section Unchanged but Styled -->
+    <div class="bg-white p-5 p-md-5 rounded-4 shadow-sm text-center border mt-5 position-relative overflow-hidden">
+        <div class="position-absolute top-0 end-0 opacity-10" style="transform: translate(30%, -30%);">
+            <i class="bi bi-bullseye text-primary" style="font-size: 15rem;"></i>
+        </div>
+        
+        <div class="mx-auto position-relative z-index-1" style="max-width: 600px;">
+            <div class="d-inline-block bg-primary bg-opacity-10 p-4 rounded-circle mb-4 text-primary">
+                <i class="bi bi-laptop" style="font-size: 3rem;"></i>
+            </div>
+            <h2 class="fw-bolder mb-3 text-dark">Track Your Progress</h2>
+            <p class="text-muted mb-4 lh-lg fs-5">
+                Applied for a service? Keep track of your application status in real-time. We manage the state machine for every simulated submission.
+            </p>
+            <a href="{% url 'applications:my_applications' %}" class="btn btn-outline-dark px-5 py-3 fw-bold rounded-pill text-uppercase border-2" style="letter-spacing: 1px;">
+                Check My Applications <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

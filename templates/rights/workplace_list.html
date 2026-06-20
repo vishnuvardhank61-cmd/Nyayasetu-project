@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+
+{% block title %}Corporate & Workplace Laws - NyayaSetu{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-5 fw-bold text-dark mb-3"><i class="bi bi-building fs-2 text-primary me-2"></i> Corporate & Workplace Laws</h1>
+        <p class="lead text-muted">Empowering employees with knowledge of their professional rights, workplace safety regulations (like PoSH), and labor protections.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 bg-white">
+            <div class="card-body p-2">
+                <form method="get" action="{% url 'rights:workplace_laws_list' %}" class="d-flex">
+                    <div class="input-group input-group-lg border-0">
+                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="q" class="form-control border-0 shadow-none bg-transparent" placeholder="Search laws (e.g., Maternity, Harassment, Gratuity)..." value="{{ query }}">
+                        <button class="btn btn-primary rounded-pill px-4 m-1 fw-bold" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if query %}
+<div class="mb-4 d-flex justify-content-between align-items-center">
+    <h5 class="fw-bold text-dark mb-0">Search Results ({{ total }})</h5>
+    <a href="{% url 'rights:workplace_laws_list' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Clear Search</a>
+</div>
+{% endif %}
+
+<div class="row g-4">
+    {% for law in laws %}
+    <div class="col-lg-6">
+        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style="transition: all 0.3s ease-in-out;">
+            <!-- Removed overlay to ensure buttons are clickable -->
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-medium">
+                        {{ law.short_name }}
+                    </span>
+                    <i class="bi bi-briefcase text-muted"></i>
+                </div>
+                
+                <h4 class="fw-bold text-dark mb-3">{{ law.title }}</h4>
+                <p class="text-muted flex-grow-1 mb-4">{{ law.description|truncatewords:20 }}</p>
+                
+                <div class="p-3 bg-light rounded-3 mb-4">
+                    <h6 class="fw-bold mb-1 fs-6"><i class="bi bi-bullseye text-danger me-2"></i> Applies To:</h6>
+                    <p class="small text-muted mb-0">{{ law.applies_to|truncatewords:12 }}</p>
+                </div>
+                
+                <a href="{% url 'rights:workplace_law_detail' law.id %}" class="btn btn-primary d-block fw-bold rounded-pill text-white mt-auto py-2">
+                    Read Full Rights <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle mb-3" style="width: 80px; height: 80px;">
+            <i class="bi bi-journal-x fs-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted fw-bold">No Workplace Laws Found</h4>
+        <p class="text-secondary">Try adjusting your search terms.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<nav aria-label="Page navigation" class="mt-5">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link rounded-start-pill border-0 shadow-sm px-4" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Previous</a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link rounded-start-pill border-0 shadow-sm px-4">Previous</span></li>
+        {% endif %}
+
+        {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="page-item active"><span class="page-link border-0 shadow-sm px-4">{{ i }}</span></li>
+            {% else %}
+                <li class="page-item"><a class="page-link border-0 shadow-sm px-4" href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link rounded-end-pill border-0 shadow-sm px-4" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next</a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link rounded-end-pill border-0 shadow-sm px-4">Next</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Review Complaint | NyayaSetu{% endblock %}
+{% block content %}
+<h2>Review Complaint</h2>
+
+<div style="background:#fff; padding:16px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.08); max-width:900px;">
+  <p><b>Tracking ID:</b> {{ c.tracking_id }}</p>
+  <p><b>User:</b> {{ c.user.username }}</p>
+  <p><b>Title:</b> {{ c.title }}</p>
+  <p><b>Category:</b> {{ c.category|default:"—" }}</p>
+  <p><b>Description:</b><br>{{ c.description }}</p>
+  <p><b>Current Violated Right:</b> {{ c.violated_right|default:"Not set" }}</p>
+  <p><b>Current Status:</b> {{ c.status }}</p>
+  
+  {% if c.evidence %}
+  <div style="margin-top:14px; padding-top:14px; border-top:1px solid #eee;">
+    <p><b>📎 Supporting Evidence:</b><br>
+      <a href="{{ c.evidence.url }}" target="_blank" class="btn btn-sm btn-outline-primary mt-1">
+        <i class="bi bi-file-earmark-arrow-down"></i> View Attachment
+      </a>
+      <span class="ms-2 small text-muted">({{ c.evidence.name|slice:":50" }})</span>
+    </p>
+  </div>
+  {% endif %}
+</div>
+
+<h3 style="margin-top:18px;">Update</h3>
+
+<form method="POST" style="max-width:900px;">
+  {% csrf_token %}
+  <div style="margin:12px 0;">{{ form.status.label_tag }}<br>{{ form.status }}</div>
+  <div style="margin:12px 0;">{{ form.violated_right.label_tag }}<br>{{ form.violated_right }}</div>
+  <div style="margin:12px 0;">{{ form.admin_remark.label_tag }}<br>{{ form.admin_remark }}</div>
+
+  <button type="submit" style="padding:10px 18px;">Save Update</button>
+  <a href="{% url 'complaints:admin_list' %}" style="margin-left:10px;">Back</a>
+</form>
+{% endblock %}

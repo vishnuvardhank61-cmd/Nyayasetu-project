@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}{{ station.name }} - Police Station - NyayaSetu{% endblock %}
+
+{% block content %}
+<div style="padding: 40px 0;">
+    <!-- Back Button -->
+    <a href="/police-stations/" style="color: #38bdf8; text-decoration: none; font-weight: bold; margin-bottom: 20px; display: inline-block;">← All Police Stations</a>
+
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #06b6d4 0%, #0f172a 100%); padding: 40px; border-radius: 8px; color: white; margin-bottom: 30px;">
+        <h1 style="margin: 0; font-size: 42px;">🚔 {{ station.name }}</h1>
+        <p style="margin: 10px 0 0; opacity: 0.9; font-size: 16px;">{{ station.city }}, {{ station.state.name }}</p>
+    </div>
+
+    <!-- Main Content -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; align-items: start;">
+        <!-- Left Column -->
+        <div>
+            <!-- About -->
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">📝 About This Police Station</h2>
+                <p style="color: #666; line-height: 1.8; margin: 0;">{{ station.description|default:"This is a police station providing law enforcement and security services to the community." }}</p>
+            </div>
+
+            <!-- Services Provided -->
+            <div style="background: #f0fdf4; padding: 25px; border-radius: 8px; border-left: 4px solid #10b981; margin-bottom: 25px;">
+                <h2 style="color: #0f172a; margin-top: 0;">⚙️ Services Provided</h2>
+                <ul style="color: #555; line-height: 1.8; margin: 0; padding-left: 20px;">
+                    <li>FIR (First Information Report) Registration</li>
+                    <li>Complaint Lodging</li>
+                    <li>Crime Investigation</li>
+                    <li>Lost & Found Items</li>
+                    <li>Community Safety Programs</li>
+                    <li>Women Safety Services</li>
+                    <li>Traffic Enforcement</li>
+                </ul>
+            </div>
+
+            <!-- Nearby Police Stations -->
+            {% if nearby %}
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">
+                <h2 style="color: #0f172a; margin-top: 0;">🏙️ Nearby Police Stations</h2>
+                <div style="display: grid; gap: 15px;">
+                    {% for ps in nearby %}
+                    <a href="/police-stations/{{ ps.id }}/" style="background: #f8f9fa; padding: 15px; border-radius: 6px; text-decoration: none; color: inherit; border-left: 4px solid #06b6d4; transition: all 0.2s;" onmouseover="this.style.background='#f0f1f3'" onmouseout="this.style.background='#f8f9fa'">
+                        <p style="margin: 0; color: #0f172a; font-weight: bold;">{{ ps.name }}</p>
+                        <p style="margin: 5px 0 0; color: #666; font-size: 13px;">{{ ps.city }}, {{ ps.state.name }}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column - Contact Info -->
+        <div>
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); margin-bottom: 25px; position: sticky; top: 20px;">
+                <h3 style="color: #0f172a; margin-top: 0;">📍 Contact Information</h3>
+                
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                    <p style="color: #999; margin: 0 0 5px; font-size: 12px; font-weight: bold;">PHONE</p>
+                    <p style="color: #0f172a; margin: 0; font-weight: bold; font-size: 16px;">
+                        <a href="tel:{{ station.phone }}" style="color: #38bdf8; text-decoration: none;">{{ station.phone }}&nbsp;<span style="font-size: 12px;">📞</span></a>
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                    <p style="color: #999; margin: 0 0 5px; font-size: 12px; font-weight: bold;">EMAIL</p>
+                    <p style="color: #0f172a; margin: 0;">
+                        <a href="mailto:{{ station.email }}" style="color: #38bdf8; text-decoration: none; word-break: break-all;">{{ station.email|default:"Not available" }}</a>
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                    <p style="color: #999; margin: 0 0 5px; font-size: 12px; font-weight: bold;">ADDRESS</p>
+                    <p style="color: #666; margin: 0; line-height: 1.6;">{{ station.address }}</p>
+                </div>
+
+                <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ddd;">
+                    <p style="color: #999; margin: 0 0 5px; font-size: 12px; font-weight: bold;">JURISDICTION</p>
+                    <p style="color: #0f172a; margin: 0;">{{ station.jurisdiction|default:"City/District wide" }}</p>
+                </div>
+
+                <div>
+                    <p style="color: #999; margin: 0 0 5px; font-size: 12px; font-weight: bold;">STATE</p>
+                    <p style="color: #0f172a; margin: 0;">{{ station.state.name }}</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08);">
+                <h3 style="color: #0f172a; margin-top: 0;">📞 Quick Actions</h3>
+                
+                <a href="tel:{{ station.phone }}" style="display: block; background: #ec4899; color: white; padding: 12px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold; margin-bottom: 10px; transition: background 0.2s;" onmouseover="this.style.background='#db2777'" onmouseout="this.style.background='#ec4899'">
+                    📞 Call Now
+                </a>
+
+                <a href="/complaints/file/" style="display: block; background: #38bdf8; color: white; padding: 12px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold; margin-bottom: 10px; transition: background 0.2s;" onmouseover="this.style.background='#0ea5e9'" onmouseout="this.style.background='#38bdf8'">
+                    📝 File Complaint
+                </a>
+
+                <a href="/user-guide/" style="display: block; background: #10b981; color: white; padding: 12px; border-radius: 6px; text-decoration: none; text-align: center; font-weight: bold; transition: background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                    📖 User Guide
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

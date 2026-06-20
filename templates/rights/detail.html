@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Article {{ right.article_number }}: {{ right.title }} - NyayaSetu{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-header {
+        background: linear-gradient(135deg, #0b2259 0%, #173880 100%);
+        padding: 40px 0;
+        color: white;
+        position: relative;
+    }
+    
+    .content-wrapper {
+        margin-top: 30px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .content-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 20px 40px -10px rgba(11, 34, 89, 0.12);
+        margin-bottom: 30px;
+        border: none;
+        transition: transform 0.3s ease;
+    }
+    
+    .content-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .label-caps {
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #94a3b8;
+        font-size: 0.75rem;
+        letter-spacing: 1.5px;
+        display: block;
+        margin-bottom: 12px;
+    }
+    
+    .section-title {
+        color: #0f172a;
+        font-weight: 800;
+        margin-bottom: 20px;
+        letter-spacing: -0.5px;
+    }
+    
+    .action-summary {
+        background: #ffffff;
+        border: 2px solid #10b981;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.15);
+    }
+    
+    .legal-text {
+        font-style: italic;
+        color: #475569;
+        border-left: 4px solid #cbd5e1;
+        background: #f8fafc;
+        padding: 20px;
+        border-radius: 0 12px 12px 0;
+        margin: 25px 0;
+    }
+    
+    .sidebar-widget {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 30px;
+        border: none;
+        box-shadow: 0 20px 40px -10px rgba(11, 34, 89, 0.12);
+    }
+    
+    .related-card {
+        transition: all 0.2s ease;
+        border: 1px solid #f1f5f9 !important;
+    }
+    .related-card:hover {
+        background: #f8fafc !important;
+        transform: translateX(4px);
+        border-color: #e2e8f0 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="detail-header">
+    <div class="container">
+        <a href="{% url 'rights:right_list' %}" class="text-white text-decoration-none opacity-75 fw-bold mb-4 d-inline-block" style="transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
+            <i class="bi bi-arrow-left me-2"></i> BACK TO INDEX
+        </a>
+        <h1 class="display-4 fw-bolder mb-2" style="letter-spacing: -1.5px;">Article {{ right.article_number }}</h1>
+        <h2 class="h4 fw-light opacity-90">{{ right.title }}</h2>
+    </div>
+</section>
+
+<div class="container content-wrapper mb-5">
+    <div class="row g-4">
+        <!-- Main Analysis -->
+        <div class="col-lg-8">
+            <!-- 1. Simple Summary -->
+            <div class="content-card">
+                <span class="label-caps">Simple Explanation</span>
+                <h4 class="section-title">What does this right mean for you?</h4>
+                <p class="fs-5 text-dark" style="line-height: 1.6; font-weight: 500;">
+                    {{ right.simple_explanation }}
+                </p>
+                
+                <div class="legal-text mt-4">
+                    <span class="label-caps mb-2" style="color: #64748b;">Legal Definition</span>
+                    {{ right.legal_explanation }}
+                </div>
+            </div>
+
+            <!-- 2. Real Life Scenarios -->
+            <div class="content-card">
+                <span class="label-caps">Real-Life Application</span>
+                <h4 class="section-title">Is this right being violated?</h4>
+                <p class="text-muted mb-4 fw-medium">Here is a common scenario where this right is protected:</p>
+                <div class="p-4 rounded-4" style="background: rgba(11, 34, 89, 0.04); border: 2px dashed rgba(11, 34, 89, 0.1);">
+                    <i class="bi bi-chat-quote-fill mb-3 d-block" style="font-size: 2rem; color: #0b2259;"></i>
+                    <p class="mb-0 fs-5 text-dark fw-bolder">{{ right.violation_example }}</p>
+                </div>
+            </div>
+
+            <!-- 3. Immediate Remedies -->
+            <div class="action-summary mb-5">
+                <span class="label-caps" style="color: #059669;">Next Steps & Action</span>
+                <h4 class="section-title" style="color: #065f46;">What should you do if violated?</h4>
+                <div class="fs-5 text-dark fw-medium mb-4" style="line-height: 1.6;">
+                    {{ right.what_to_do|linebreaks }}
+                </div>
+                
+                <div class="p-4 rounded-4" style="background: #f0fdf4; border: 1px solid #a7f3d0;">
+                    <span class="label-caps text-success">Authority to Approach</span>
+                    <p class="mb-0 fw-bold fs-5" style="color: #064e3b;"><i class="bi bi-check-circle-fill me-2 text-success"></i> {{ right.where_to_complain }}</p>
+                </div>
+            </div>
+            
+            {% if right.case_references %}
+                <div class="mb-5 px-3">
+                    <span class="label-caps">Historical Precedent</span>
+                    <p class="text-muted small fw-medium"><i class="bi bi-bank me-2"></i> {{ right.case_references }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Links sidebar -->
+        <div class="col-lg-4">
+            <div>
+                <!-- Situation Engine Link -->
+                <div class="sidebar-widget mb-4" style="background: linear-gradient(135deg, #0b2259 0%, #173880 100%); color: white;">
+                    <h5 class="fw-bolder mb-3" style="color: white; letter-spacing: -0.5px;">Facing a specific problem?</h5>
+                    <p class="small mb-4 opacity-75">Browse our Situation Engine to find step-by-step guides for real-world issues.</p>
+                    <a href="{% url 'violations:list' %}" class="btn btn-light w-100 fw-bold py-2 shadow-sm text-primary" style="border-radius: 8px;">
+                        Open Situation Engine <i class="bi bi-lightning-charge ms-2"></i>
+                    </a>
+                </div>
+
+                <!-- Related Right Cards -->
+                <div class="sidebar-widget">
+                    <h6 class="fw-bolder mb-4">Related Constitutional Articles</h6>
+                    {% for rel in related_rights %}
+                        <a href="{% url 'rights:right_detail' rel.id %}" class="related-card text-decoration-none d-block p-3 mb-3 rounded-4 bg-white shadow-sm">
+                            <span class="small fw-bolder text-primary mb-1 d-block"><i class="bi bi-file-earmark-text"></i> Article {{ rel.article_number }}</span>
+                            <p class="mb-0 text-dark fw-bold" style="line-height: 1.3;">{{ rel.title }}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

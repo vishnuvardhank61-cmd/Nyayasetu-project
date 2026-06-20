@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"Language: hi\n"
+
+msgid "Home"
+msgstr "होम"
+
+msgid "Rights"
+msgstr "अधिकार"
+
+msgid "Fundamental Rights"
+msgstr "मौलिक अधिकार"
+
+msgid "Women Safety Laws"
+msgstr "महिला सुरक्षा कानून"
+
+msgid "Corporate & Workplace Laws"
+msgstr "कॉर्पोरेट और कार्यस्थल कानून"
+
+msgid "State/Regional Laws"
+msgstr "राज्य/क्षेत्रीय कानून"
+
+msgid "Violations & Consequences"
+msgstr "उल्लंघन और परिणाम"
+
+msgid "Where to Complain Matrix"
+msgstr "शिकायत कहाँ करें मैट्रिक्स"
+
+msgid "Traffic Rules & e-Challan"
+msgstr "यातायात नियम और ई-चालान"
+
+msgid "Govt Services"
+msgstr "सरकारी सेवाएं"
+
+msgid "Document Guides"
+msgstr "दस्तावेज़ गाइड"
+
+msgid "Apply Online"
+msgstr "ऑनलाइन आवेदन करें"
+
+msgid "Complaints"
+msgstr "शिकायतें"
+
+msgid "File Complaint"
+msgstr "शिकायत दर्ज करें"
+
+msgid "Police"
+msgstr "पुलिस"
+
+msgid "Helplines"
+msgstr "हेल्पलाइन"
+
