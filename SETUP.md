@@ -17,7 +17,7 @@
 3. `violations` - Consequences of rights violations
 4. `documents` - Government documents with guides/PDFs
 5. `applications` - Government service applications (Driving License, PAN, Voter ID, Vehicle Registration)
-6. `police_stations` - Police stations with Google Maps support
+6. `police_stations` - Police stations with Leaflet & OpenStreetMap support
 7. `helplines` - Emergency helplines and support services
 
 ---
@@ -44,7 +44,6 @@ Update `.env` with:
 SECRET_KEY=your-secret-key-here
 DEBUG=False
 ALLOWED_HOSTS=localhost,yourdomain.com
-GOOGLE_MAPS_API_KEY=your-google-maps-api-key
 ```
 
 ### 3. **Create Logs Directory**
@@ -168,7 +167,6 @@ Access via: http://localhost:8000/admin
 - [ ] Create superuser
 - [ ] Add seed data (states, laws, documents, etc.)
 - [ ] Setup email backend (Gmail, SendGrid, etc.)
-- [ ] Configure Google Maps API key
 - [ ] Finalize Bootstrap 5 templates
 - [ ] Setup multi-language translations
 - [ ] Configure static file hosting (CDN)
@@ -204,4 +202,4 @@ python manage.py test
 
 - Django Docs: https://docs.djangoproject.com/
 - Bootstrap 5: https://getbootstrap.com/
-- Google Maps API: https://developers.google.com/maps
+- Leaflet.js: https://leafletjs.com/

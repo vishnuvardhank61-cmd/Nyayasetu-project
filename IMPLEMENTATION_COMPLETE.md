@@ -81,37 +81,26 @@ templates/applications/my_applications.html - Track applications
 **Other Pages:**
 ```
 templates/helplines/list.html - Emergency numbers
-templates/police_stations/map.html - Station locator with Google Maps
+templates/police_stations/map.html - Station locator with Leaflet Maps
 templates/regions/laws_by_state.html - State-specific laws
 ```
 
-### 3. **Google Maps Integration** (Optional)
+### 3. **Interactive Map Integration** (Completed)
 
-Add to navbar for police stations:
+The project currently uses **Leaflet.js** and **OpenStreetMap** for the police stations locator. This is completely free and requires no API keys!
+
+The implementation exists in `templates/police_stations/list.html`:
 ```html
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 ```
 
-Add map display in police_stations/map.html:
+Map Initialization:
 ```javascript
-function initMap() {
-    const map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
-        center: { lat: 28.6139, lng: 77.2090 } // Delhi
-    });
-    
-    // Add police station markers
-    {% for station in police_stations %}
-        new google.maps.Marker({
-            position: {
-                lat: {{ station.latitude }},
-                lng: {{ station.longitude }}
-            },
-            map: map,
-            title: '{{ station.name }}'
-        });
-    {% endfor %}
-}
+let map = L.map('leafletMap').setView([28.6139, 77.2090], 5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
 ```
 
 ### 4. **Multi-Language Content** (Optional)
